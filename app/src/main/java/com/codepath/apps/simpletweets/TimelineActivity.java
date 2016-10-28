@@ -5,6 +5,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.widget.ListView;
 
 import com.codepath.apps.simpletweets.models.Tweet;
+import com.loopj.android.http.AsyncHttpResponseHandler;
 import com.loopj.android.http.JsonHttpResponseHandler;
 
 import org.json.JSONArray;
@@ -31,12 +32,28 @@ public class TimelineActivity extends AppCompatActivity {
         /* Create the list adapter that will be our data source */
         tweetList = new ArrayList<>();
         mTweetsAdapter = new TweetsAdapter(TimelineActivity.this, tweetList);
-
+        lvTweets.setAdapter(mTweetsAdapter);
 
         /* Singleton */
         mTwitterClient = TwitterApplication.getRestClient();
         populateTimeline();
-        lvTweets.setAdapter(mTweetsAdapter);
+
+        sendTweet();
+    }
+
+    private void sendTweet() {
+        mTwitterClient.sendTwitterMessage(new JsonHttpResponseHandler() {
+            @Override
+            public void onFailure(int statusCode, Header[] headers, Throwable throwable, JSONObject errorResponse) {
+                Timber.e("statusCode %d %s", statusCode, errorResponse.toString());
+            }
+
+            @Override
+            public void onSuccess(int statusCode, Header[] headers, JSONArray response) {
+                Timber.d("onSuccess Tweeting statuscode: %d responseBody %s", statusCode, response.toString());
+            }
+        });
+
     }
 
     /* Send an API request to get the timeline json
