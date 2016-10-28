@@ -9,6 +9,8 @@ import com.codepath.oauth.OAuthBaseClient;
 import com.loopj.android.http.AsyncHttpResponseHandler;
 import com.loopj.android.http.RequestParams;
 
+import static org.scribe.model.Verb.GET;
+
 /*
  * 
  * This is the object responsible for communicating with a REST API. 
@@ -34,6 +36,7 @@ public class TwitterClient extends OAuthBaseClient {
 
 	// CHANGE THIS
 	// DEFINE METHODS for different API endpoints here
+/*
 	public void getInterestingnessList(AsyncHttpResponseHandler handler) {
 		String apiUrl = getApiUrl("?nojsoncallback=1&method=flickr.interestingness.getList");
 		// Can specify query string params directly or through RequestParams.
@@ -41,6 +44,24 @@ public class TwitterClient extends OAuthBaseClient {
 		params.put("format", "json");
 		client.get(apiUrl, params, handler);
 	}
+*/
+
+/*  Home timeline
+	GET statuses/user_timeline.jso
+    count=25
+	since_id=1
+*/
+    public void getHomeTimeline(AsyncHttpResponseHandler handler) {
+        String apiUrl = getApiUrl("statuses/user_timeline.json");
+        /* Specify the params */
+        RequestParams params = new RequestParams();
+        params.put("count", 25);
+        /* Filtered list of the most recent tweets */
+        params.put("since_id", 1);
+        getClient().get(apiUrl, params, handler);
+    }
+
+
 
 	/* 1. Define the endpoint URL with getApiUrl and pass a relative path to the endpoint
 	 * 	  i.e getApiUrl("statuses/home_timeline.json");

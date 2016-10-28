@@ -45,4 +45,7 @@ dependencies {
     apt "com.github.Raizlabs.DBFlow:dbflow-processor:${dbflow_version}"
     compile "com.github.Raizlabs.DBFlow:dbflow-core:${dbflow_version}"
     compile "com.github.Raizlabs.DBFlow:dbflow:${dbflow_version}"
+
+    /** Logging */
+    compile "com.jakewharton.timber:timber:4.3.1"
 }
