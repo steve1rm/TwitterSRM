@@ -11,17 +11,14 @@ import org.json.JSONArray;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 
 import cz.msebera.android.httpclient.Header;
 import timber.log.Timber;
 
-import static java.util.Collections.addAll;
-
 public class TimelineActivity extends AppCompatActivity {
     private TwitterClient mTwitterClient;
-    private ArrayList<Tweet> tweetList;
+    private List<Tweet> tweetList;
     private ListView lvTweets;
     private TweetsAdapter mTweetsAdapter;
 

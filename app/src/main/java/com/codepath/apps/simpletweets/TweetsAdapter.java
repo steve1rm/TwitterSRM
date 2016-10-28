@@ -5,7 +5,6 @@ import android.support.annotation.NonNull;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Adapter;
 import android.widget.ArrayAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -13,7 +12,6 @@ import android.widget.TextView;
 import com.codepath.apps.simpletweets.models.Tweet;
 import com.squareup.picasso.Picasso;
 
-import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -24,7 +22,7 @@ import java.util.List;
    into views displayed in the list */
 public class TweetsAdapter extends ArrayAdapter<Tweet> {
 
-    public TweetsAdapter(Context context, ArrayList<Tweet> tweets) {
+    public TweetsAdapter(Context context, List<Tweet> tweets) {
         super(context, 0, tweets);
     }
 
