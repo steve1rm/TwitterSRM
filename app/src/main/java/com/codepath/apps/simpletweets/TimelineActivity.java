@@ -29,6 +29,15 @@ public class TimelineActivity extends AppCompatActivity {
         setContentView(R.layout.activity_timeline);
 
         lvTweets = (ListView)findViewById(R.id.lvTweets);
+        lvTweets.setOnScrollListener(new EndlessScrollListener() {
+            @Override
+            public boolean onLoadMore(int page, int totalItemsCount) {
+                Timber.d("onLoadMore page %d totalItemsCount %d", page, totalItemsCount);
+                loadNextDataFromApi(page);
+                return true;
+            }
+        });
+        
         /* Create the list adapter that will be our data source */
         tweetList = new ArrayList<>();
         mTweetsAdapter = new TweetsAdapter(TimelineActivity.this, tweetList);
@@ -36,9 +45,41 @@ public class TimelineActivity extends AppCompatActivity {
 
         /* Singleton */
         mTwitterClient = TwitterApplication.getRestClient();
-        populateTimeline();
+  //      sendTweet();
+        //populateTimeline();
+        populateHomeTimeline();
+    }
 
-        sendTweet();
+    private void loadNextDataFromApi(int page) {
+        Timber.d("loadNextDataFromApi %d", page);
+        mTwitterClient.getHomeTimeline(new JsonHttpResponseHandler() {
+            @Override
+            public void onSuccess(int statusCode, Header[] headers, JSONArray response) {
+                /* deserialize json */
+                mTweetsAdapter.addAll(Tweet.fromJSONArray(response));
+                Timber.d("loadNextDataFromAPI onSuccess %s %d", response.toString(), tweetList.size());
+            }
+
+            @Override
+            public void onFailure(int statusCode, Header[] headers, Throwable throwable, JSONObject errorResponse) {
+                Timber.e("loadNextDataFromAPI onFailure %s", errorResponse.toString());
+            }
+        });
+    }
+
+    private void populateHomeTimeline() {
+        mTwitterClient.getHomeTimeline(new JsonHttpResponseHandler() {
+            @Override
+            public void onFailure(int statusCode, Header[] headers, String responseString, Throwable throwable) {
+                Timber.e(throwable, "statusCode %d", statusCode);
+            }
+
+            @Override
+            public void onSuccess(int statusCode, Header[] headers, JSONArray response) {
+                mTweetsAdapter.addAll(Tweet.fromJSONArray(response));
+                Timber.d("onSuccess Home Timeline: %s", response.toString());
+            }
+        });
     }
 
     private void sendTweet() {
@@ -56,10 +97,12 @@ public class TimelineActivity extends AppCompatActivity {
 
     }
 
+
+
     /* Send an API request to get the timeline json
     *  Fill the listview by creating the tweet objects from the json */
     private void populateTimeline() {
-        mTwitterClient.getHomeTimeline(new JsonHttpResponseHandler() {
+        mTwitterClient.getUserTimeline(new JsonHttpResponseHandler() {
             @Override
             public void onSuccess(int statusCode, Header[] headers, JSONArray response) {
                 /* deserialize json */
