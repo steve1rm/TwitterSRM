@@ -3,5 +3,9 @@
 
     <string name="app_name">Rest Client Template</string>
     <string name="login_label">Connect to Twitter</string>
+    <string name="cancel">Cancel</string>
+    <string name="send">Send</string>
+    <string name="enter_tweet_message">Enter tweet message</string>
+    <string name="compose">Compose</string>
 
 </resources>

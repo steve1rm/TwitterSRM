@@ -1,7 +1,9 @@
 package com.codepath.apps.simpletweets;
 
 import android.content.Context;
+import android.net.ParseException;
 import android.support.annotation.NonNull;
+import android.text.format.DateUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -12,7 +14,9 @@ import android.widget.TextView;
 import com.codepath.apps.simpletweets.models.Tweet;
 import com.squareup.picasso.Picasso;
 
+import java.text.SimpleDateFormat;
 import java.util.List;
+import java.util.Locale;
 
 /**
  * Created by steve on 10/28/16.
@@ -41,7 +45,10 @@ public class TweetsAdapter extends ArrayAdapter<Tweet> {
             ImageView ivProfileImage = (ImageView)convertView.findViewById(R.id.ivProfileImage);
             TextView tvUsername = (TextView)convertView.findViewById(R.id.tvUserName);
             TextView tvBody = (TextView)convertView.findViewById(R.id.tvBody);
+            TextView tvCreatedAt = (TextView)convertView.findViewById(R.id.date);
+            String formattedDate = getRelativeTimeAgo(tweet.getCreatedAt());
 
+            tvCreatedAt.setText(formattedDate);
             tvUsername.setText(tweet.getUser().getScreenName());
             tvBody.setText(tweet.getBody());
 
@@ -52,5 +59,24 @@ public class TweetsAdapter extends ArrayAdapter<Tweet> {
         }
 
         return convertView;
+    }
+
+    public String getRelativeTimeAgo(String rawJsonDate) {
+        String twitterFormat = "EEE MMM dd HH:mm:ss ZZZZZ yyyy";
+        SimpleDateFormat sf = new SimpleDateFormat(twitterFormat, Locale.ENGLISH);
+        sf.setLenient(true);
+
+        String relativeDate = "";
+
+        try {
+            long dateMillis = sf.parse(rawJsonDate).getTime();
+            relativeDate = DateUtils.getRelativeTimeSpanString(dateMillis,
+                    System.currentTimeMillis(), DateUtils.SECOND_IN_MILLIS).toString();
+        }
+        catch (java.text.ParseException e) {
+            e.printStackTrace();
+        }
+
+        return relativeDate;
     }
 }

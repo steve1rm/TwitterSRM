@@ -20,6 +20,15 @@ public class Tweet {
     private long uid;
     private User user;
     private String createdAt;
+    private String date;
+
+    public String getDate() {
+        return date;
+    }
+
+    public void setDate(String date) {
+        this.date = date;
+    }
 
     public String getBody() {
         return body;
