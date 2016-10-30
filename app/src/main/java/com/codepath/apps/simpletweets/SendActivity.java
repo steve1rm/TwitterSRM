@@ -1,5 +1,6 @@
 package com.codepath.apps.simpletweets;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.widget.EditText;
@@ -49,6 +50,11 @@ public class SendActivity extends AppCompatActivity {
         /* Send tweet */
         final String message = mEtComposeTweet.getText().toString();
         sendTweet(message);
+
+/*
+        Intent intent = new Intent(SendActivity.this, TimelineActivity.class);
+        startActivity(intent);
+*/
     }
 
     @Override

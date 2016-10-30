@@ -1,10 +1,12 @@
 package com.codepath.apps.simpletweets;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.text.format.DateUtils;
 import android.view.Menu;
+import android.view.MenuItem;
 import android.widget.ListView;
 
 import com.codepath.apps.simpletweets.models.Tweet;
@@ -63,13 +65,6 @@ public class TimelineActivity extends AppCompatActivity {
 
         /* Singleton */
         mTwitterClient = TwitterApplication.getRestClient();
-  //      sendTweet();
-        //populateTimeline();
-
-
-        populateHomeTimeline();
-
-
 
         Timber.d("date a go: %s", date);
     }
@@ -184,12 +179,32 @@ public class TimelineActivity extends AppCompatActivity {
         });
     }
 
+    @Override
+    protected void onResume() {
+        super.onResume();
+        Timber.d("onResume: load more tweets %d", tweetList.size());
+        populateHomeTimeline();
+        mTweetsAdapter.notifyDataSetChanged();
+        lvTweets.invalidateViews();
+    }
 
     // Inflate the menu; this adds items to the action bar if it is present.
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.login, menu);
         return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch(item.getItemId()) {
+            case R.id.menuCompose:
+                /* open sending tweet activity */
+                Intent intent = new Intent(TimelineActivity.this, SendActivity.class);
+                startActivity(intent);
+                return true;
+        }
+        return super.onOptionsItemSelected(item);
     }
 
     @Override
