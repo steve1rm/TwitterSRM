@@ -4,17 +4,19 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
-import android.text.format.DateUtils;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.ListView;
 
 import com.codepath.apps.simpletweets.models.Tweet;
+import com.codepath.apps.simpletweets.models.User;
+import com.codepath.apps.simpletweets.utils.Utilities;
 import com.loopj.android.http.JsonHttpResponseHandler;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
 
+import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -26,6 +28,8 @@ import butterknife.ButterKnife;
 import butterknife.Unbinder;
 import cz.msebera.android.httpclient.Header;
 import timber.log.Timber;
+
+import static android.R.id.message;
 
 public class TimelineActivity extends AppCompatActivity {
     private TwitterClient mTwitterClient;
@@ -56,7 +60,7 @@ public class TimelineActivity extends AppCompatActivity {
         });
 
         String createdAt = "Sun Oct 23 05:50:13 +0000 2016";
-        String date = getTimeDifference(createdAt);
+        String date = Utilities.getTimeDifference(createdAt);
 
         /* Create the list adapter that will be our data source */
         tweetList = new ArrayList<>();
@@ -66,6 +70,9 @@ public class TimelineActivity extends AppCompatActivity {
         /* Singleton */
         mTwitterClient = TwitterApplication.getRestClient();
 
+        populateHomeTimeline(0);
+   //     processIntent(getIntent());
+
         Timber.d("date a go: %s", date);
     }
 
@@ -73,65 +80,10 @@ public class TimelineActivity extends AppCompatActivity {
         setSupportActionBar(mToolbar);
     }
 
-    public static String getTimeDifference(String rawJsonDate) {
-        String time = "";
-        String twitterFormat = "EEE MMM dd HH:mm:ss ZZZZZ yyyy";
-        SimpleDateFormat format = new SimpleDateFormat(twitterFormat, Locale.ENGLISH);
-        format.setLenient(true);
-        try {
-            long diff = (System.currentTimeMillis() - format.parse(rawJsonDate).getTime()) / 1000;
-            if (diff < 5)
-                time = "Just now";
-            else if (diff < 60)
-                time = String.format(Locale.ENGLISH, "%ds",diff);
-            else if (diff < 60 * 60)
-                time = String.format(Locale.ENGLISH, "%dm", diff / 60);
-            else if (diff < 60 * 60 * 24)
-                time = String.format(Locale.ENGLISH, "%dh", diff / (60 * 60));
-            else if (diff < 60 * 60 * 24 * 30)
-                time = String.format(Locale.ENGLISH, "%dd", diff / (60 * 60 * 24));
-            else {
-                Calendar now = Calendar.getInstance();
-                Calendar then = Calendar.getInstance();
-                then.setTime(format.parse(rawJsonDate));
-                if (now.get(Calendar.YEAR) == then.get(Calendar.YEAR)) {
-                    time = String.valueOf(then.get(Calendar.DAY_OF_MONTH)) + " "
-                            + then.getDisplayName(Calendar.MONTH, Calendar.SHORT, Locale.US);
-                } else {
-                    time = String.valueOf(then.get(Calendar.DAY_OF_MONTH)) + " "
-                            + then.getDisplayName(Calendar.MONTH, Calendar.SHORT, Locale.US)
-                            + " " + String.valueOf(then.get(Calendar.YEAR) - 2000);
-                }
-            }
-        }  catch (java.text.ParseException e) {
-            e.printStackTrace();
-        }
-        return time;
-    }
 
-
-    public String getRelativeTimeAgo(String rawJsonDate) {
-        String twitterFormat = "EEE MMM dd HH:mm:ss ZZZZZ yyyy";
-        SimpleDateFormat sf = new SimpleDateFormat(twitterFormat, Locale.ENGLISH);
-        sf.setLenient(true);
-
-        String relativeDate = "";
-
-        try {
-            long dateMillis = sf.parse(rawJsonDate).getTime();
-            relativeDate = DateUtils.getRelativeTimeSpanString(dateMillis,
-                    System.currentTimeMillis(), DateUtils.SECOND_IN_MILLIS).toString();
-        }
-        catch (java.text.ParseException e) {
-            e.printStackTrace();
-        }
-
-        return relativeDate;
-    }
-
-    private void loadNextDataFromApi(int page) {
-        Timber.d("loadNextDataFromApi %d", page);
-        mTwitterClient.getHomeTimelineExt(new JsonHttpResponseHandler() {
+    private void loadNextDataFromApi(int pageCount) {
+        Timber.d("loadNextDataFromApi %d", pageCount);
+        mTwitterClient.getHomeTimeline(pageCount, new JsonHttpResponseHandler() {
             @Override
             public void onSuccess(int statusCode, Header[] headers, JSONArray response) {
                 /* deserialize json */
@@ -146,8 +98,8 @@ public class TimelineActivity extends AppCompatActivity {
         });
     }
 
-    private void populateHomeTimeline() {
-        mTwitterClient.getHomeTimeline(new JsonHttpResponseHandler() {
+    private void populateHomeTimeline(int pageCount) {
+        mTwitterClient.getHomeTimeline(pageCount, new JsonHttpResponseHandler() {
             @Override
             public void onFailure(int statusCode, Header[] headers, String responseString, Throwable throwable) {
                 Timber.e(throwable, "statusCode %d", statusCode);
@@ -179,13 +131,41 @@ public class TimelineActivity extends AppCompatActivity {
         });
     }
 
+    public void processIntent(Intent data) {
+        /* Sanity check for corrupt data */
+        if(data != null) {
+            if(data.hasExtra(SendActivity.STATUSMSG_KEY)) {
+                String message = data.getStringExtra(SendActivity.STATUSMSG_KEY);
+                createTweet(message);
+            }
+        }
+    }
+
+    private void createTweet(String message) {
+        Timber.d("onResume: load more tweets %d", tweetList.size());
+        Tweet tweet = new Tweet();
+
+        DateFormat dateFormat = new SimpleDateFormat("EEE, d MMM HH:mm:ss Z yyyy", Locale.getDefault());
+
+        tweet.setCreatedAt(dateFormat.format(Calendar.getInstance().getTime()));
+        tweet.setBody(message);
+        tweet.setDate(dateFormat.format(Calendar.getInstance().getTime()));
+
+        User user = new User();
+        user.setProfileImageUrl("http://a0.twimg.com/profile_images/2284174872/7df3h38zabcvjylnyfe3_normal.png");
+        user.setScreenName("Steve mason");
+        user.setName("Steve Mason");
+        tweet.setUser(user);
+
+        mTweetsAdapter.add(tweet);
+        mTweetsAdapter.notifyDataSetChanged();
+        lvTweets.invalidateViews();
+    }
+
     @Override
     protected void onResume() {
         super.onResume();
-        Timber.d("onResume: load more tweets %d", tweetList.size());
-        populateHomeTimeline();
-        mTweetsAdapter.notifyDataSetChanged();
-        lvTweets.invalidateViews();
+
     }
 
     // Inflate the menu; this adds items to the action bar if it is present.

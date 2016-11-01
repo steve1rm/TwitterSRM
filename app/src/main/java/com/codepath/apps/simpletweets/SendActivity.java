@@ -18,6 +18,8 @@ import cz.msebera.android.httpclient.Header;
 import timber.log.Timber;
 
 public class SendActivity extends AppCompatActivity {
+    public final static String STATUSMSG_KEY = "statusmsg_key";
+    public final static int REQUEST_CODE = 0;
 
     @BindView(R.id.etComposeTweet) EditText mEtComposeTweet;
 
@@ -40,21 +42,22 @@ public class SendActivity extends AppCompatActivity {
             @Override
             public void onSuccess(int statusCode, Header[] headers, JSONArray response) {
                 Timber.d("onSuccess Tweeting statuscode: %d responseBody %s", statusCode, response.toString());
+                finish();
             }
         });
     }
 
     @SuppressWarnings("unused")
-    @OnClick(R.id.btnSend)
+    @OnClick(R.id.fabSendTweet)
     public void btnSendTweet() {
         /* Send tweet */
         final String message = mEtComposeTweet.getText().toString();
         sendTweet(message);
 
-/*
         Intent intent = new Intent(SendActivity.this, TimelineActivity.class);
+        intent.putExtra(STATUSMSG_KEY, message);
         startActivity(intent);
-*/
+        mEtComposeTweet.setText("");
     }
 
     @Override

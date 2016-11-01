@@ -9,11 +9,6 @@
 
     <include layout="@layout/toolbar"/>
 
-    <TextView
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="Twitter Client"/>
-
     <ListView
         android:id="@+id/lvTweets"
         android:layout_width="match_parent"

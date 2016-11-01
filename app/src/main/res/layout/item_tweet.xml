@@ -1,12 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="?attr/listPreferredItemHeight"
+    android:padding="4dp">
 
     <ImageView
-        android:layout_width="50dp"
-        android:layout_height="50dp"
         android:id="@+id/ivProfileImage"
+        android:layout_width="60dp"
+        android:layout_height="60dp"
         android:paddingLeft="10dp"
         android:paddingStart="10dp"
         android:paddingRight="8dp"
@@ -16,22 +17,15 @@
         android:layout_alignParentStart="true" />
 
     <TextView
+        android:id="@+id/tvUserName"
         android:text="placeholder"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentTop="true"
         android:layout_toRightOf="@+id/ivProfileImage"
         android:layout_toEndOf="@+id/ivProfileImage"
-        android:id="@+id/tvUserName" />
-
-    <TextView
-        android:text="TextView"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignBottom="@+id/ivProfileImage"
-        android:layout_toRightOf="@+id/ivProfileImage"
-        android:layout_toEndOf="@+id/ivProfileImage"
-        android:id="@+id/tvBody" />
+        android:textSize="16sp"
+        android:fontFamily="sans-serif-medium"/>
 
     <TextView
         android:id="@+id/date"
@@ -39,7 +33,21 @@
         android:layout_height="wrap_content"
         android:layout_alignParentEnd="true"
         android:layout_alignParentRight="true"
-        android:textStyle="bold"
-        android:textSize="22sp"
-        android:text="Date"/>
+        android:textSize="14sp"
+        android:text="Date"
+        android:fontFamily="sans-serif-condensed"/>
+
+    <TextView
+        android:text="TextView"
+        android:id="@+id/tvBody"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_toRightOf="@+id/ivProfileImage"
+        android:layout_toEndOf="@+id/ivProfileImage"
+        android:layout_below="@id/tvUserName"
+        android:maxLines="2"
+        android:ellipsize="end"
+        android:textSize="14sp"
+        android:fontFamily="sans-serif-condensed"/>
+
 </RelativeLayout>

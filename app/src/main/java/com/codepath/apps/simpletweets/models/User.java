@@ -27,6 +27,18 @@ public class User {
         return screenName;
     }
 
+    public void setScreenName(String screenName) {
+        this.screenName = screenName;
+    }
+
+    public void setProfileImageUrl(String profileImageUrl) {
+        this.profileImageUrl = profileImageUrl;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
     public long getUid() {
         return uid;
     }

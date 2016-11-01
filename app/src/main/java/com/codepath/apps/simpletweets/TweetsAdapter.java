@@ -12,11 +12,14 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.codepath.apps.simpletweets.models.Tweet;
+import com.codepath.apps.simpletweets.utils.Utilities;
 import com.squareup.picasso.Picasso;
 
 import java.text.SimpleDateFormat;
 import java.util.List;
 import java.util.Locale;
+
+import static com.codepath.apps.simpletweets.R.id.tvBody;
 
 /**
  * Created by steve on 10/28/16.
@@ -37,7 +40,7 @@ public class TweetsAdapter extends ArrayAdapter<Tweet> {
         /* Get the tweet */
         Tweet tweet = getItem(position);
 
-        /* Inflate the tempate */
+        /* Inflate the template */
         if(convertView == null) {
             convertView = LayoutInflater.from(parent.getContext())
                     .inflate(R.layout.item_tweet, parent, false);
@@ -46,10 +49,11 @@ public class TweetsAdapter extends ArrayAdapter<Tweet> {
             TextView tvUsername = (TextView)convertView.findViewById(R.id.tvUserName);
             TextView tvBody = (TextView)convertView.findViewById(R.id.tvBody);
             TextView tvCreatedAt = (TextView)convertView.findViewById(R.id.date);
-            String formattedDate = getRelativeTimeAgo(tweet.getCreatedAt());
+            String formattedDate = Utilities.getRelativeTimeAgo(tweet.getCreatedAt());
 
             tvCreatedAt.setText(formattedDate);
-            tvUsername.setText(tweet.getUser().getScreenName());
+            String screenName = "@" + tweet.getUser().getScreenName();
+            tvUsername.setText(screenName);
             tvBody.setText(tweet.getBody());
 
             ivProfileImage.setImageResource(android.R.color.transparent);
@@ -59,24 +63,5 @@ public class TweetsAdapter extends ArrayAdapter<Tweet> {
         }
 
         return convertView;
-    }
-
-    public String getRelativeTimeAgo(String rawJsonDate) {
-        String twitterFormat = "EEE MMM dd HH:mm:ss ZZZZZ yyyy";
-        SimpleDateFormat sf = new SimpleDateFormat(twitterFormat, Locale.ENGLISH);
-        sf.setLenient(true);
-
-        String relativeDate = "";
-
-        try {
-            long dateMillis = sf.parse(rawJsonDate).getTime();
-            relativeDate = DateUtils.getRelativeTimeSpanString(dateMillis,
-                    System.currentTimeMillis(), DateUtils.SECOND_IN_MILLIS).toString();
-        }
-        catch (java.text.ParseException e) {
-            e.printStackTrace();
-        }
-
-        return relativeDate;
     }
 }
