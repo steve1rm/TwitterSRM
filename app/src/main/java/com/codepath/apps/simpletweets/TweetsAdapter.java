@@ -11,6 +11,7 @@ import android.widget.ArrayAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.bumptech.glide.Glide;
 import com.codepath.apps.simpletweets.models.Tweet;
 import com.codepath.apps.simpletweets.utils.Utilities;
 import com.squareup.picasso.Picasso;
@@ -57,10 +58,17 @@ public class TweetsAdapter extends ArrayAdapter<Tweet> {
             tvBody.setText(tweet.getBody());
 
             ivProfileImage.setImageResource(android.R.color.transparent);
-            Picasso.with(parent.getContext())
+
+            Glide.with(parent.getContext())
+                    .load(tweet.getUser().getProfileImageUrl())
+                    .centerCrop()
+                    .crossFade()
+                    .into(ivProfileImage);
+
+ /*           Picasso.with(parent.getContext())
                     .load(tweet.getUser().getProfileImageUrl())
                     .into(ivProfileImage);
-        }
+*/        }
 
         return convertView;
     }
