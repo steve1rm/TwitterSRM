@@ -2,6 +2,7 @@ package com.codepath.apps.simpletweets;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
@@ -29,8 +30,6 @@ import butterknife.Unbinder;
 import cz.msebera.android.httpclient.Header;
 import timber.log.Timber;
 
-import static android.R.id.message;
-
 public class TimelineActivity extends AppCompatActivity {
     private TwitterClient mTwitterClient;
     private List<Tweet> tweetList;
@@ -39,6 +38,7 @@ public class TimelineActivity extends AppCompatActivity {
     private Unbinder mUnbinder;
 
     @BindView(R.id.tbTweeter) Toolbar mToolbar;
+    @BindView(R.id.swipeContainer) SwipeRefreshLayout swipeContainer;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -71,9 +71,30 @@ public class TimelineActivity extends AppCompatActivity {
         mTwitterClient = TwitterApplication.getRestClient();
 
         populateHomeTimeline(0);
-   //     processIntent(getIntent());
 
-        Timber.d("date a go: %s", date);
+        swipeContainer.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                refreshHomeTimeline(0);
+            }
+        });
+    }
+
+    private void refreshHomeTimeline(int page) {
+        mTwitterClient.getHomeTimeline(page, new JsonHttpResponseHandler() {
+            @Override
+            public void onFailure(int statusCode, Header[] headers, String responseString, Throwable throwable) {
+                Timber.e(throwable, "statusCode %d", statusCode);
+            }
+
+            @Override
+            public void onSuccess(int statusCode, Header[] headers, JSONArray response) {
+                mTweetsAdapter.clear();
+                mTweetsAdapter.addAll(Tweet.fromJSONArray(response));
+                swipeContainer.setRefreshing(false);
+                Timber.d("onSuccess Home Timeline: %s", response.toString());
+            }
+        });
     }
 
     private void setupToolbar() {
