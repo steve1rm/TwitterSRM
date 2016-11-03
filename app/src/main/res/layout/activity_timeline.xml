@@ -7,11 +7,10 @@
     android:orientation="vertical"
     tools:context="com.codepath.apps.simpletweets.TimelineActivity">
 
-
     <fragment
         android:id="@+id/fragment_timeline"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:name="com.codepath.apps.simpletweets.fragments.TweetsListFragment"
+        android:name="com.codepath.apps.simpletweets.fragments.MentionsTimelineFragment"
         tools:layout="@layout/fragment_tweet_list" />
 </LinearLayout>

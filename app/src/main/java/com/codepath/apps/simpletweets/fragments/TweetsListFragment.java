@@ -3,28 +3,20 @@ package com.codepath.apps.simpletweets.fragments;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
-import android.support.v4.widget.SwipeRefreshLayout;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ListView;
 
-import com.codepath.apps.simpletweets.EndlessScrollListener;
 import com.codepath.apps.simpletweets.R;
-import com.codepath.apps.simpletweets.TimelineActivity;
 import com.codepath.apps.simpletweets.TweetsAdapter;
-import com.codepath.apps.simpletweets.TwitterApplication;
 import com.codepath.apps.simpletweets.models.Tweet;
-import com.codepath.apps.simpletweets.utils.Utilities;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import butterknife.ButterKnife;
 import butterknife.Unbinder;
-import timber.log.Timber;
-
-import static com.codepath.apps.simpletweets.R.id.swipeContainer;
 
 /**
  * Created by steve on 11/3/16.
@@ -35,13 +27,6 @@ public class TweetsListFragment extends Fragment {
     private ListView lvTweets;
     private TweetsAdapter mTweetsAdapter;
     private Unbinder mUnbinder;
-
-
-
-
-
-
-
 
     /* Inflation logic */
 
