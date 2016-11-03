@@ -199,7 +199,8 @@ public class TimelineActivity extends AppCompatActivity {
     }*/
 
     public void onProfileView(MenuItem menuItem) {
-
+        Intent intent = new Intent(TimelineActivity.this, ProfileActivity.class);
+        startActivity(intent);
     }
 
     @Override

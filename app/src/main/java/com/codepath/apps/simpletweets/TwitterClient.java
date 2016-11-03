@@ -10,6 +10,8 @@ import com.loopj.android.http.AsyncHttpResponseHandler;
 import com.loopj.android.http.JsonHttpResponseHandler;
 import com.loopj.android.http.RequestParams;
 
+import timber.log.Timber;
+
 import static org.scribe.model.Verb.GET;
 
 /*
@@ -52,13 +54,14 @@ public class TwitterClient extends OAuthBaseClient {
     count=25
 	since_id=1
 */
-    public void getUserTimeline(AsyncHttpResponseHandler handler) {
+    public void getUserTimeline(final String screenName, AsyncHttpResponseHandler handler) {
         String apiUrl = getApiUrl("statuses/user_timeline.json");
         /* Specify the params */
         RequestParams params = new RequestParams();
         params.put("count", 25);
+        params.put("screen_name", screenName);
         /* Filtered list of the most recent tweets */
-        params.put("since_id", 1);
+        //params.put("since_id", 1);
         getClient().get(apiUrl, params, handler);
     }
 
@@ -92,6 +95,22 @@ public class TwitterClient extends OAuthBaseClient {
         params.put("count", 25);
         getClient().get(apiUrl, params, handler);
     }
+
+    public void getUserInfo(AsyncHttpResponseHandler handler) {
+        Timber.d("getUserInfo");
+        String apiUrl = getApiUrl("account/verify_credentials.json");
+
+        getClient().get(apiUrl, null, handler);
+    }
+
+
+/*
+    public void getUserInfo(AsyncHttpResponseHandler handler) {
+        Timber.d("getUserInfo");
+        String apiUrl = getApiUrl("statuses/verify_credentials.json");
+        getClient().get(apiUrl, null, handler);
+    }
+*/
 
 
     /* Get new tweets */
