@@ -7,5 +7,6 @@
     <string name="send">Send</string>
     <string name="enter_tweet_message">Enter tweet message</string>
     <string name="compose">Compose</string>
+    <string name="profile">Profile</string>
 
 </resources>

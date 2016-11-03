@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+    <item
+        android:id="@+id/miProfile"
+        android:orderInCategory="100"
+        android:title="@string/profile"
+        android:icon="@drawable/ic_profile"
+        app:showAsAction="ifRoom"
+        android:onClick="onProfileView"/>
+
+    <item
+        android:id="@+id/menuCompose"
+        android:icon="@android:drawable/ic_menu_send"
+        app:showAsAction="ifRoom"
+        android:title="@string/compose"/>
+</menu>

@@ -55,4 +55,7 @@ dependencies {
     /** View Injection */
     compile 'com.jakewharton:butterknife:8.4.0'
     apt 'com.jakewharton:butterknife-compiler:8.4.0'
+
+    /** utilities */
+    compile 'com.astuetz:pagerslidingtabstrip:1.0.1'
 }
