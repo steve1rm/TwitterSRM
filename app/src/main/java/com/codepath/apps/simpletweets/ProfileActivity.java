@@ -4,13 +4,14 @@ import android.os.Bundle;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.widget.ImageView;
+import android.widget.TextView;
 
 import com.codepath.apps.simpletweets.fragments.UserTimelineFragment;
-import com.codepath.apps.simpletweets.models.Tweet;
 import com.codepath.apps.simpletweets.models.User;
 import com.loopj.android.http.JsonHttpResponseHandler;
+import com.squareup.picasso.Picasso;
 
-import org.json.JSONArray;
 import org.json.JSONObject;
 
 import butterknife.BindView;
@@ -19,7 +20,7 @@ import butterknife.Unbinder;
 import cz.msebera.android.httpclient.Header;
 import timber.log.Timber;
 
-import static java.util.Collections.addAll;
+import static com.codepath.apps.simpletweets.R.id.ivProfileImage;
 
 public class ProfileActivity extends AppCompatActivity {
     private TwitterClient mTwitterClient;
@@ -27,6 +28,10 @@ public class ProfileActivity extends AppCompatActivity {
 
     private Unbinder mUnbinder;
     @BindView(R.id.tbTweeter) Toolbar mToolbar;
+    @BindView(R.id.tvTagLine) TextView mTvTagline;
+    @BindView(R.id.tvFollowers) TextView mTvFollowers;
+    @BindView(R.id.tvFollowing) TextView mTvFollowing;
+    @BindView(ivProfileImage) ImageView mIvProfileImage;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -35,7 +40,7 @@ public class ProfileActivity extends AppCompatActivity {
         mTwitterClient = TwitterApplication.getRestClient();
 
         mUnbinder = ButterKnife.bind(ProfileActivity.this);
-        
+
         setupToolbar();
 
         mTwitterClient.getUserInfo(new JsonHttpResponseHandler() {
@@ -45,6 +50,8 @@ public class ProfileActivity extends AppCompatActivity {
                 mUser = User.fromJSON(response);
 
                 getSupportActionBar().setTitle("@" + mUser.getScreenName());
+
+                populateProfileHeader();
             }
 
             @Override
@@ -61,6 +68,14 @@ public class ProfileActivity extends AppCompatActivity {
             fragmentTransaction.replace(R.id.flContainer, userTimelineFragment, "usertimelinefragment");
             fragmentTransaction.commit();
         }
+    }
+
+    private void populateProfileHeader() {
+        mTvTagline.setText(mUser.getTagline());
+
+        mTvFollowers.setText(String.valueOf(mUser.getFollowersCount()));
+        mTvFollowing.setText(String.valueOf(mUser.getFollowingCount()));
+        Picasso.with(ProfileActivity.this).load(mUser.getProfileImageUrl()).into(mIvProfileImage);
     }
 
     public void setupToolbar() {

@@ -14,6 +14,9 @@ public class User {
     private long uid;
     private String screenName;
     private String profileImageUrl;
+    private String tagline;
+    private int followingCount;
+    private int followersCount;
 
     public String getName() {
         return name;
@@ -25,6 +28,18 @@ public class User {
 
     public String getScreenName() {
         return screenName;
+    }
+
+    public int getFollowersCount() {
+        return followersCount;
+    }
+
+    public int getFollowingCount() {
+        return followingCount;
+    }
+
+    public String getTagline() {
+        return tagline;
     }
 
     public void setScreenName(String screenName) {
@@ -52,6 +67,10 @@ public class User {
             user.uid = json.getLong("id");
             user.screenName = json.getString("screen_name");
             user.profileImageUrl = json.getString("profile_image_url");
+            user.tagline = json.getString("description");
+            user.followersCount = json.getInt("followers_count");
+            user.followingCount = json.getInt("friends_count");
+
         } catch (JSONException e) {
             Timber.e(e, "Failed to deserialize for user");
         }
