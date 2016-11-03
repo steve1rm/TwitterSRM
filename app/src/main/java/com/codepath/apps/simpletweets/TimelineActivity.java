@@ -9,44 +9,47 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.ListView;
 
+import com.codepath.apps.simpletweets.fragments.TweetsListFragment;
 import com.codepath.apps.simpletweets.models.Tweet;
-import com.codepath.apps.simpletweets.models.User;
-import com.codepath.apps.simpletweets.utils.Utilities;
-import com.loopj.android.http.JsonHttpResponseHandler;
 
-import org.json.JSONArray;
-import org.json.JSONObject;
-
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.List;
-import java.util.Locale;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.Unbinder;
-import cz.msebera.android.httpclient.Header;
-import timber.log.Timber;
 
 public class TimelineActivity extends AppCompatActivity {
-    private TwitterClient mTwitterClient;
+
+/*
     private List<Tweet> tweetList;
     private ListView lvTweets;
     private TweetsAdapter mTweetsAdapter;
     private Unbinder mUnbinder;
 
+    private TweetsListFragment fragmentTweetsList;
+
     @BindView(R.id.tbTweeter) Toolbar mToolbar;
     @BindView(R.id.swipeContainer) SwipeRefreshLayout swipeContainer;
+*/
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_timeline);
+/*
 
         mUnbinder = ButterKnife.bind(TimelineActivity.this);
 
+        if(savedInstanceState == null) {
+            */
+/* Pull the fragment out of the layout *//*
+
+            fragmentTweetsList =
+                    (TweetsListFragment) getSupportFragmentManager().findFragmentById(R.id.fragment_timeline);
+        }
+*/
+
+/*
         setupToolbar();
 
         lvTweets = (ListView)findViewById(R.id.lvTweets);
@@ -62,15 +65,19 @@ public class TimelineActivity extends AppCompatActivity {
         String createdAt = "Sun Oct 23 05:50:13 +0000 2016";
         String date = Utilities.getTimeDifference(createdAt);
 
-        /* Create the list adapter that will be our data source */
+        */
+/* Create the list adapter that will be our data source *//*
+
         tweetList = new ArrayList<>();
         mTweetsAdapter = new TweetsAdapter(TimelineActivity.this, tweetList);
         lvTweets.setAdapter(mTweetsAdapter);
 
-        /* Singleton */
-        mTwitterClient = TwitterApplication.getRestClient();
+        */
+/* Singleton *//*
 
-        populateHomeTimeline(0);
+        //mTwitterClient = TwitterApplication.getRestClient();
+
+       //
 
         swipeContainer.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
@@ -78,9 +85,10 @@ public class TimelineActivity extends AppCompatActivity {
                 refreshHomeTimeline(0);
             }
         });
+*/
     }
 
-    private void refreshHomeTimeline(int page) {
+  /*  private void refreshHomeTimeline(int page) {
         mTwitterClient.getHomeTimeline(page, new JsonHttpResponseHandler() {
             @Override
             public void onFailure(int statusCode, Header[] headers, String responseString, Throwable throwable) {
@@ -96,18 +104,18 @@ public class TimelineActivity extends AppCompatActivity {
             }
         });
     }
-
-    private void setupToolbar() {
+*/
+ /*   private void setupToolbar() {
         setSupportActionBar(mToolbar);
     }
+*/
 
-
-    private void loadNextDataFromApi(int pageCount) {
+  /*  private void loadNextDataFromApi(int pageCount) {
         Timber.d("loadNextDataFromApi %d", pageCount);
         mTwitterClient.getHomeTimeline(pageCount, new JsonHttpResponseHandler() {
             @Override
             public void onSuccess(int statusCode, Header[] headers, JSONArray response) {
-                /* deserialize json */
+                *//* deserialize json *//*
                 mTweetsAdapter.addAll(Tweet.fromJSONArray(response));
                 Timber.d("loadNextDataFromAPI onSuccess %s %d", response.toString(), tweetList.size());
             }
@@ -119,28 +127,13 @@ public class TimelineActivity extends AppCompatActivity {
         });
     }
 
-    private void populateHomeTimeline(int pageCount) {
-        mTwitterClient.getHomeTimeline(pageCount, new JsonHttpResponseHandler() {
-            @Override
-            public void onFailure(int statusCode, Header[] headers, String responseString, Throwable throwable) {
-                Timber.e(throwable, "statusCode %d", statusCode);
-            }
-
-            @Override
-            public void onSuccess(int statusCode, Header[] headers, JSONArray response) {
-                mTweetsAdapter.addAll(Tweet.fromJSONArray(response));
-                Timber.d("onSuccess Home Timeline: %s", response.toString());
-            }
-        });
-    }
-
-    /* Send an API request to get the timeline json
+  */  /* Send an API request to get the timeline json
     *  Fill the listview by creating the tweet objects from the json */
-    private void populateTimeline() {
+  /*  private void populateTimeline() {
         mTwitterClient.getUserTimeline(new JsonHttpResponseHandler() {
             @Override
             public void onSuccess(int statusCode, Header[] headers, JSONArray response) {
-                /* deserialize json */
+                *//* deserialize json *//*
                 mTweetsAdapter.addAll(Tweet.fromJSONArray(response));
                 Timber.d("onSuccess %s %d", response.toString(), tweetList.size());
             }
@@ -151,9 +144,9 @@ public class TimelineActivity extends AppCompatActivity {
             }
         });
     }
-
-    public void processIntent(Intent data) {
-        /* Sanity check for corrupt data */
+*/
+ /*   public void processIntent(Intent data) {
+        *//* Sanity check for corrupt data *//*
         if(data != null) {
             if(data.hasExtra(SendActivity.STATUSMSG_KEY)) {
                 String message = data.getStringExtra(SendActivity.STATUSMSG_KEY);
@@ -161,8 +154,8 @@ public class TimelineActivity extends AppCompatActivity {
             }
         }
     }
-
-    private void createTweet(String message) {
+*/
+ /*   private void createTweet(String message) {
         Timber.d("onResume: load more tweets %d", tweetList.size());
         Tweet tweet = new Tweet();
 
@@ -181,7 +174,7 @@ public class TimelineActivity extends AppCompatActivity {
         mTweetsAdapter.add(tweet);
         mTweetsAdapter.notifyDataSetChanged();
         lvTweets.invalidateViews();
-    }
+    }*/
 
     @Override
     protected void onResume() {
@@ -211,6 +204,6 @@ public class TimelineActivity extends AppCompatActivity {
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        mUnbinder.unbind();
+  //      mUnbinder.unbind();
     }
 }
