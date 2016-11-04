@@ -28,7 +28,6 @@ public class TimelineActivity extends AppCompatActivity {
 
     private TweetsListFragment fragmentTweetsList;
 
-
     @BindView(R.id.swipeContainer) SwipeRefreshLayout swipeContainer;
 */
 
@@ -54,7 +53,6 @@ public class TimelineActivity extends AppCompatActivity {
         mTabs.setViewPager(mViewpager);
 
 /*
-
         mUnbinder = ButterKnife.bind(TimelineActivity.this);
 
         if(savedInstanceState == null) {

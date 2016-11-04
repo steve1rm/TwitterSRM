@@ -26,11 +26,11 @@ public class MentionsTimelineFragment extends TweetsListFragment {
 
         mTwitterClient = TwitterApplication.getRestClient();
 
-        populateHomeTimeline(0);
+        populateMentionsTimeline(25, 1);
     }
 
-    private void populateHomeTimeline(int pageCount) {
-        mTwitterClient.getMentionsTimeline(new JsonHttpResponseHandler() {
+    private void populateMentionsTimeline(int count, int since_id) {
+        mTwitterClient.getMentionsTimeline(count, since_id, new JsonHttpResponseHandler() {
             @Override
             public void onFailure(int statusCode, Header[] headers, String responseString, Throwable throwable) {
                 Timber.e(throwable, "statusCode %d", statusCode);

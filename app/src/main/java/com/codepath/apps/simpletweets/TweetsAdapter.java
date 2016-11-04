@@ -64,11 +64,7 @@ public class TweetsAdapter extends ArrayAdapter<Tweet> {
                     .centerCrop()
                     .crossFade()
                     .into(ivProfileImage);
-
- /*           Picasso.with(parent.getContext())
-                    .load(tweet.getUser().getProfileImageUrl())
-                    .into(ivProfileImage);
-*/        }
+        }
 
         return convertView;
     }

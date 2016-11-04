@@ -18,9 +18,14 @@ public class Tweet {
     private String body;
     /* Database id for the tweet */
     private long uid;
+    private String strId;
     private User user;
     private String createdAt;
     private String date;
+
+    public String getStrId() {
+        return strId;
+    }
 
     public String getDate() {
         return date;
@@ -67,6 +72,7 @@ public class Tweet {
             tweet.uid = jsonObject.getLong("id");
             tweet.createdAt = jsonObject.getString("created_at");
             tweet.user = User.fromJSON(jsonObject.getJSONObject("user"));
+            tweet.strId = jsonObject.getString("id_str");
         } catch (JSONException e) {
             Timber.e(e, "Failed to deserialize");
         }

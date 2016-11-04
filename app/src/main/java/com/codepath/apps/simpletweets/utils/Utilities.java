@@ -67,4 +67,27 @@ public final class Utilities {
         return relativeDate;
     }
 
+    public static String subtractOneFromID(String str) {
+        String allButLast = str.substring(0, str.length() - 1);
+        String lastNumber = str.substring(str.length() - 1);
+
+        if(lastNumber.equals("0")) {
+            return subtractOneFromID(allButLast) + "9";
+        }
+        else {
+            String finalResult = allButLast + (Integer.parseInt(lastNumber, 10) - 1);
+            return trimLeft(finalResult, "0");
+        }
+    }
+
+    private static String trimLeft(String s, String c) {
+        int i = 0;
+
+        while(i < s.length() && s.charAt(i) == 'c') {
+            i++;
+        }
+
+        return s.substring(i);
+    }
+
 }

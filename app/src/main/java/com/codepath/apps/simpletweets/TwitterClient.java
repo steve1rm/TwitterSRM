@@ -1,18 +1,15 @@
 package com.codepath.apps.simpletweets;
 
-import org.scribe.builder.api.Api;
-import org.scribe.builder.api.TwitterApi;
-
 import android.content.Context;
 
 import com.codepath.oauth.OAuthBaseClient;
 import com.loopj.android.http.AsyncHttpResponseHandler;
-import com.loopj.android.http.JsonHttpResponseHandler;
 import com.loopj.android.http.RequestParams;
 
-import timber.log.Timber;
+import org.scribe.builder.api.Api;
+import org.scribe.builder.api.TwitterApi;
 
-import static org.scribe.model.Verb.GET;
+import timber.log.Timber;
 
 /*
  * 
@@ -37,20 +34,8 @@ public class TwitterClient extends OAuthBaseClient {
 		super(context, REST_API_CLASS, REST_URL, REST_CONSUMER_KEY, REST_CONSUMER_SECRET, REST_CALLBACK_URL);
 	}
 
-	// CHANGE THIS
-	// DEFINE METHODS for different API endpoints here
-/*
-	public void getInterestingnessList(AsyncHttpResponseHandler handler) {
-		String apiUrl = getApiUrl("?nojsoncallback=1&method=flickr.interestingness.getList");
-		// Can specify query string params directly or through RequestParams.
-		RequestParams params = new RequestParams();
-		params.put("format", "json");
-		client.get(apiUrl, params, handler);
-	}
-*/
-
 /*  Home timeline
-	GET statuses/user_timeline.jso
+	GET statuses/user_timeline.json
     count=25
 	since_id=1
 */
@@ -79,70 +64,35 @@ public class TwitterClient extends OAuthBaseClient {
     /* User timeline
     statuses/home_timeline.json
     */
-    public void getHomeTimeline(int max_id, AsyncHttpResponseHandler handler) {
+    public void getHomeTimeline(int count, int since_id, AsyncHttpResponseHandler handler) {
         String apiUrl = getApiUrl("statuses/home_timeline.json");
         RequestParams params = new RequestParams();
-        params.put("count", 25);
-  //      params.put("page", pageCount);
-        params.put("since_id", 1);
-  //      params.put("max_id", "792420991553208320");
+        params.put("count", count);
+        params.put("since_id", since_id);
         getClient().get(apiUrl, params, handler);
     }
 
-    public void getMentionsTimeline(AsyncHttpResponseHandler handler) {
+    /* Get new tweets */
+    public void getHomeTimelineExt(int count, String max_id, AsyncHttpResponseHandler handler) {
+        String apiUrl = getApiUrl("statuses/home_timeline.json");
+        RequestParams params = new RequestParams();
+
+        params.put("count", count);
+        params.put("max_id", max_id);
+        getClient().get(apiUrl, params, handler);
+    }
+
+    public void getMentionsTimeline(int count, int since_id, AsyncHttpResponseHandler handler) {
         String apiUrl = getApiUrl("statuses/mentions_timeline.json");
         RequestParams params = new RequestParams();
-        params.put("count", 25);
+        params.put("count", count);
+        params.put("since_id", since_id);
         getClient().get(apiUrl, params, handler);
     }
 
     public void getUserInfo(AsyncHttpResponseHandler handler) {
         Timber.d("getUserInfo");
         String apiUrl = getApiUrl("account/verify_credentials.json");
-
         getClient().get(apiUrl, null, handler);
     }
-
-
-/*
-    public void getUserInfo(AsyncHttpResponseHandler handler) {
-        Timber.d("getUserInfo");
-        String apiUrl = getApiUrl("statuses/verify_credentials.json");
-        getClient().get(apiUrl, null, handler);
-    }
-*/
-
-
-    /* Get new tweets */
-    public void getHomeTimelineExt(AsyncHttpResponseHandler handler) {
-        String apiUrl = getApiUrl("statuses/home_timeline.json");
-        RequestParams params = new RequestParams();
-
-        params.put("count", 25);
-/*
-        params.put("since_id", 1);
-        params.put("max_id", "792420991553208320");
-*/
-        getClient().get(apiUrl, params, handler);
-    }
-
- /*   public void getMentionsTimeline(int pageCount, AsyncHttpResponseHandler handler) {
-        String apiUrl = getApiUrl("statuses/home_timeline.json");
-        RequestParams params = new RequestParams();
-        params.put("count", 25);
-        //      params.put("page", pageCount);
-        //      params.put("since_id", 1);
-     //   params.put("max_id", "792420991553208320");
-        getClient().get(apiUrl, params, handler);
-    }
-*/
-
-	/* 1. Define the endpoint URL with getApiUrl and pass a relative path to the endpoint
-	 * 	  i.e getApiUrl("statuses/home_timeline.json");
-	 * 2. Define the parameters to pass to the request (query or body)
-	 *    i.e RequestParams params = new RequestParams("foo", "bar");
-	 * 3. Define the request method and make a call to the client
-	 *    i.e client.get(apiUrl, params, handler);
-	 *    i.e client.post(apiUrl, params, handler);
-	 */
 }
