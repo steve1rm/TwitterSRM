@@ -12,6 +12,8 @@ import android.widget.TextView;
 import com.bumptech.glide.Glide;
 import com.codepath.apps.simpletweets.ProfileActivity;
 import com.codepath.apps.simpletweets.R;
+import com.codepath.apps.simpletweets.UserProfileActivity;
+import com.codepath.apps.simpletweets.fragments.UserProfileView;
 import com.codepath.apps.simpletweets.models.Tweet;
 import com.codepath.apps.simpletweets.utils.Utilities;
 
@@ -125,7 +127,7 @@ public class HometimelineAdapter extends RecyclerView.Adapter<HometimelineAdapte
                     Tweet tweet = mTweetList.get(getLayoutPosition());
 
                     Timber.d("onClick %d %s", getAdapterPosition(), tweet.getUser().getName());
-                    Intent intent = new Intent(mContextRef.get(), ProfileActivity.class);
+                    Intent intent = new Intent(mContextRef.get(), UserProfileActivity.class);
                     intent.putExtra("screen_name", tweet.getUser().getName());
                     mContextRef.get().startActivity(intent);
                 }
