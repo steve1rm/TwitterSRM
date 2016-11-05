@@ -10,13 +10,12 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.codepath.apps.simpletweets.utils.EndlessRecyclerViewScrollListener;
-import com.codepath.apps.simpletweets.utils.EndlessScrollListener;
 import com.codepath.apps.simpletweets.R;
 import com.codepath.apps.simpletweets.TwitterApplication;
 import com.codepath.apps.simpletweets.TwitterClient;
 import com.codepath.apps.simpletweets.adapters.HometimelineAdapter;
 import com.codepath.apps.simpletweets.models.Tweet;
+import com.codepath.apps.simpletweets.utils.EndlessRecyclerViewScrollListener;
 import com.loopj.android.http.JsonHttpResponseHandler;
 
 import org.json.JSONArray;
@@ -28,8 +27,6 @@ import butterknife.ButterKnife;
 import butterknife.Unbinder;
 import cz.msebera.android.httpclient.Header;
 import timber.log.Timber;
-
-import static java.util.Collections.addAll;
 
 /**
  * Created by steve on 11/3/16.
