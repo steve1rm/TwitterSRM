@@ -10,10 +10,8 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
-import com.codepath.apps.simpletweets.ProfileActivity;
 import com.codepath.apps.simpletweets.R;
 import com.codepath.apps.simpletweets.UserProfileActivity;
-import com.codepath.apps.simpletweets.fragments.UserProfileView;
 import com.codepath.apps.simpletweets.models.Tweet;
 import com.codepath.apps.simpletweets.utils.Utilities;
 
@@ -26,8 +24,6 @@ import java.util.List;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import timber.log.Timber;
-
-import static android.content.ContentValues.TAG;
 
 /**
  * Created by steve on 11/4/16.

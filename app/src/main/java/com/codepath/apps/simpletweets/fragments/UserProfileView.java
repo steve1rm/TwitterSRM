@@ -69,17 +69,6 @@ public class UserProfileView extends Fragment {
         return view;
     }
 
-
-/*
-    @BindView(R.id.ivUserProfileHeader) ImageView mIvUserProfileHeader;
-    @BindView(R.id.ivUserProfile) ImageView mIvUserProfile;
-    @BindView(R.id.tvTitle) TextView mTvTitle;
-    @BindView(R.id.tvScreenName) TextView mTvScreenName;
-    @BindView(R.id.tvDescription) TextView mTvDescription;
-    @BindView(R.id.tvFollowingNumber) TextView mTvFollowingNumber;
-    @BindView(R.id.tvFollowersNumber) TextView mTvFollowersNumber;
-*/
-
     private void populateFields() {
         Glide.with(getActivity())
                 .load(mTweet.getUser().getProfileBackgroundImageUrl())
@@ -89,9 +78,10 @@ public class UserProfileView extends Fragment {
                 .load(mTweet.getUser().getProfileImageUrl())
                 .into(mIvUserProfile);
 
-        String formattedDate = Utilities.getRelativeTimeAgo(mTweet.getCreatedAt());
+        final String formattedDate = Utilities.getRelativeTimeAgo(mTweet.getCreatedAt());
         mTvDate.setText(formattedDate);
-        mTvScreenName.setText(mTweet.getUser().getScreenName());
+        final String screenName = "@" + mTweet.getUser().getScreenName();
+        mTvScreenName.setText(screenName);
         mTvDescription.setText(mTweet.getBody());
         mTvFollowersNumber.setText(String.valueOf(mTweet.getUser().getFollowersCount()));
         mTvFollowingNumber.setText(String.valueOf(mTweet.getUser().getFollowingCount()));
