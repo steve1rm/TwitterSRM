@@ -1,9 +1,7 @@
 package com.codepath.apps.simpletweets;
 
 import android.content.Context;
-import android.net.ParseException;
 import android.support.annotation.NonNull;
-import android.text.format.DateUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -14,13 +12,8 @@ import android.widget.TextView;
 import com.bumptech.glide.Glide;
 import com.codepath.apps.simpletweets.models.Tweet;
 import com.codepath.apps.simpletweets.utils.Utilities;
-import com.squareup.picasso.Picasso;
 
-import java.text.SimpleDateFormat;
 import java.util.List;
-import java.util.Locale;
-
-import static com.codepath.apps.simpletweets.R.id.tvBody;
 
 /**
  * Created by steve on 10/28/16.
@@ -44,7 +37,7 @@ public class TweetsAdapter extends ArrayAdapter<Tweet> {
         /* Inflate the template */
         if(convertView == null) {
             convertView = LayoutInflater.from(parent.getContext())
-                    .inflate(R.layout.item_tweet, parent, false);
+                    .inflate(R.layout.item_tweet_row, parent, false);
 
             ImageView ivProfileImage = (ImageView)convertView.findViewById(R.id.ivProfileImage);
             TextView tvUsername = (TextView)convertView.findViewById(R.id.tvUserName);

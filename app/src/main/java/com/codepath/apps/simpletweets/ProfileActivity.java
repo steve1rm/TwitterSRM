@@ -61,7 +61,8 @@ public class ProfileActivity extends AppCompatActivity {
         });
 
         if(savedInstanceState == null) {
-            final String screenName = getIntent().getStringExtra("screen_name");
+            String screenName = getIntent().getStringExtra("screen_name");
+ //           screenName = "AndroidGuys";
             UserTimelineFragment userTimelineFragment = UserTimelineFragment.newInstance(screenName);
 
             FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();

@@ -2,25 +2,47 @@ package com.codepath.apps.simpletweets.fragments;
 
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.v4.app.Fragment;
+import android.support.v7.widget.DividerItemDecoration;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
 
-import com.codepath.apps.simpletweets.EndlessScrollListener;
+import com.codepath.apps.simpletweets.utils.EndlessRecyclerViewScrollListener;
+import com.codepath.apps.simpletweets.utils.EndlessScrollListener;
+import com.codepath.apps.simpletweets.R;
 import com.codepath.apps.simpletweets.TwitterApplication;
 import com.codepath.apps.simpletweets.TwitterClient;
+import com.codepath.apps.simpletweets.adapters.HometimelineAdapter;
 import com.codepath.apps.simpletweets.models.Tweet;
 import com.loopj.android.http.JsonHttpResponseHandler;
 
 import org.json.JSONArray;
 
+import java.util.ArrayList;
+
+import butterknife.BindView;
+import butterknife.ButterKnife;
+import butterknife.Unbinder;
 import cz.msebera.android.httpclient.Header;
 import timber.log.Timber;
+
+import static java.util.Collections.addAll;
 
 /**
  * Created by steve on 11/3/16.
  */
 
-public class HomeTimelineFragment extends TweetsListFragment {
+public class HomeTimelineFragment extends Fragment {
     private TwitterClient mTwitterClient;
     private String mMaxId;
+    private HometimelineAdapter mHometimeAdapter;
+    private EndlessRecyclerViewScrollListener mEndlessRecyclerViewScrollListener;
+
+    @BindView(R.id.rvHometimeline) RecyclerView mRvHometimeline;
+    private Unbinder mUnbinder;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -28,50 +50,86 @@ public class HomeTimelineFragment extends TweetsListFragment {
 
         mTwitterClient = TwitterApplication.getRestClient();
 
-        populateHomeTimeline(25, 1);
+        populateHomeTimeline(15, 1);
+    }
 
- /*       lvTweets.setOnScrollListener(new EndlessScrollListener() {
+    @Nullable
+    @Override
+    public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+        final View view = inflater.inflate(R.layout.home_timeline, container, false);
+
+        mUnbinder = ButterKnife.bind(HomeTimelineFragment.this, view);
+
+        setupRecylcerView();
+
+        return view;
+    }
+
+    private void setupRecylcerView() {
+        Timber.d("setupRecyclerView");
+        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getActivity(), LinearLayoutManager.VERTICAL, false);
+        mRvHometimeline.setLayoutManager(linearLayoutManager);
+        mHometimeAdapter = new HometimelineAdapter(getActivity(), new ArrayList<Tweet>());
+        mRvHometimeline.setAdapter(mHometimeAdapter);
+        DividerItemDecoration dividerItemDecoration = new DividerItemDecoration(getActivity(), DividerItemDecoration.VERTICAL);
+        mRvHometimeline.addItemDecoration(dividerItemDecoration);
+
+        setupEndlessScrolling(linearLayoutManager);
+    }
+
+    private void setupEndlessScrolling(LinearLayoutManager linearLayoutManager) {
+        Timber.d("setupEndlessScrolling");
+
+        mEndlessRecyclerViewScrollListener = new EndlessRecyclerViewScrollListener(linearLayoutManager) {
             @Override
-            public boolean onLoadMore(int page, int totalItemsCount) {
-                Timber.d("onLoadMore page %d totalItemsCount %d", page, totalItemsCount);
-                populateHomeTimeHistory(25, mMaxId);
-                return true;
+            public void onLoadMore(int page, int totalItemsCount, RecyclerView view) {
+                Timber.d("onLoadMore page %d [%s]", page, mMaxId);
+                mMaxId = mHometimeAdapter.getMaxId();
+            //    populateHomeTimeHistory(15, mMaxId);
             }
-        });
- */
+        };
+        mRvHometimeline.addOnScrollListener(mEndlessRecyclerViewScrollListener);
     }
 
     private void populateHomeTimeline(int count, int since_id) {
+        Timber.d("populateHomeTimeline");
+
         mTwitterClient.getHomeTimeline(count, since_id, new JsonHttpResponseHandler() {
             @Override
             public void onFailure(int statusCode, Header[] headers, String responseString, Throwable throwable) {
-                Timber.e(throwable, "statusCode %d", statusCode);
+                Timber.e(throwable, "onFailure statuscode %d throwable %s responseString %s", statusCode, throwable.getMessage(), responseString);
             }
 
             @Override
             public void onSuccess(int statusCode, Header[] headers, JSONArray response) {
-                addAll(Tweet.fromJSONArray(response));
-                mMaxId = getMaxId();
+                mHometimeAdapter.addAll(Tweet.fromJSONArray(response));
+                mMaxId = mHometimeAdapter.getMaxId();
                 Timber.d("onSuccess Home Timeline: [%s] %s", mMaxId, response.toString());
             }
         });
     }
 
     private void populateHomeTimeHistory(int count, final String maxId) {
+        Timber.d("populateHomeTimeHistory");
+
         mTwitterClient.getHomeTimelineExt(count, maxId, new JsonHttpResponseHandler() {
             @Override
             public void onSuccess(int statusCode, Header[] headers, JSONArray response) {
-                addAll(Tweet.fromJSONArray(response));
-                mMaxId = getMaxId();
+                mHometimeAdapter.addAll(Tweet.fromJSONArray(response));
+                mMaxId = mHometimeAdapter.getMaxId();
                 Timber.d("onSuccess Home Timeline: [%s] %s", mMaxId, response.toString());
             }
 
             @Override
             public void onFailure(int statusCode, Header[] headers, String responseString, Throwable throwable) {
-                Timber.e(throwable, "onFailure");
+                Timber.e(throwable, "onFailure statuscode %d throwable %s responseString %s", statusCode, throwable.getMessage(), responseString);
             }
         });
     }
 
-
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+        mUnbinder.unbind();
+    }
 }

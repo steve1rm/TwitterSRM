@@ -8,7 +8,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ListView;
 
-import com.codepath.apps.simpletweets.EndlessScrollListener;
+import com.codepath.apps.simpletweets.utils.EndlessScrollListener;
 import com.codepath.apps.simpletweets.R;
 import com.codepath.apps.simpletweets.TweetsAdapter;
 import com.codepath.apps.simpletweets.models.Tweet;
