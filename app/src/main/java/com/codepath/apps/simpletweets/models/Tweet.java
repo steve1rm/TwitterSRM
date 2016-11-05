@@ -3,9 +3,9 @@ package com.codepath.apps.simpletweets.models;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.parceler.Parcel;
 
 import java.util.ArrayList;
-import java.util.List;
 
 import timber.log.Timber;
 
@@ -14,14 +14,18 @@ import timber.log.Timber;
  */
 
 /* Parse and store the data */
+@Parcel
 public class Tweet {
-    private String body;
+    String body;
     /* Database id for the tweet */
-    private long uid;
-    private String strId;
-    private User user;
-    private String createdAt;
-    private String date;
+    long uid;
+    String strId;
+    User user;
+    String createdAt;
+    String date;
+
+    public Tweet() {
+    }
 
     public String getStrId() {
         return strId;

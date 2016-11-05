@@ -2,6 +2,7 @@ package com.codepath.apps.simpletweets.models;
 
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.parceler.Parcel;
 
 import timber.log.Timber;
 
@@ -9,14 +10,28 @@ import timber.log.Timber;
  * Created by steve on 10/28/16.
  */
 
+@Parcel
 public class User {
-    private String name;
-    private long uid;
-    private String screenName;
-    private String profileImageUrl;
-    private String tagline;
-    private int followingCount;
-    private int followersCount;
+    String name;
+    long uid;
+    String screenName;
+    String profileImageUrl;
+    String tagline;
+    int followingCount;
+    int followersCount;
+    String profileBackgroundImageUrl;
+    String userDescripton;
+
+    public User() {
+    }
+
+    public String getProfileBackgroundImageUrl() {
+        return profileBackgroundImageUrl;
+    }
+
+    public String getUserDescripton() {
+        return userDescripton;
+    }
 
     public String getName() {
         return name;
@@ -70,6 +85,8 @@ public class User {
             user.tagline = json.getString("description");
             user.followersCount = json.getInt("followers_count");
             user.followingCount = json.getInt("friends_count");
+            user.profileBackgroundImageUrl = json.getString("profile_background_image_url");
+            user.userDescripton = json.getString("description");
 
         } catch (JSONException e) {
             Timber.e(e, "Failed to deserialize for user");

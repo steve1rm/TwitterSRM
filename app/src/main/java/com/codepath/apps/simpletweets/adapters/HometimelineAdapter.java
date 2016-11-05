@@ -17,6 +17,8 @@ import com.codepath.apps.simpletweets.fragments.UserProfileView;
 import com.codepath.apps.simpletweets.models.Tweet;
 import com.codepath.apps.simpletweets.utils.Utilities;
 
+import org.parceler.Parcels;
+
 import java.lang.ref.WeakReference;
 import java.util.Collections;
 import java.util.List;
@@ -128,7 +130,7 @@ public class HometimelineAdapter extends RecyclerView.Adapter<HometimelineAdapte
 
                     Timber.d("onClick %d %s", getAdapterPosition(), tweet.getUser().getName());
                     Intent intent = new Intent(mContextRef.get(), UserProfileActivity.class);
-                    intent.putExtra("screen_name", tweet.getUser().getName());
+                    intent.putExtra("tweetextra", Parcels.wrap(tweet));
                     mContextRef.get().startActivity(intent);
                 }
             });
