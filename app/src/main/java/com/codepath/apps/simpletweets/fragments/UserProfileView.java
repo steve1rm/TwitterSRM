@@ -9,16 +9,17 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.bumptech.glide.Glide;
 import com.codepath.apps.simpletweets.R;
 import com.codepath.apps.simpletweets.models.Tweet;
+import com.codepath.apps.simpletweets.utils.Utilities;
 
-import org.parceler.Parcel;
 import org.parceler.Parcels;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.Unbinder;
-import timber.log.Timber;
+import de.hdodenhof.circleimageview.CircleImageView;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -26,8 +27,8 @@ import timber.log.Timber;
 public class UserProfileView extends Fragment {
 
     @BindView(R.id.ivUserProfileHeader) ImageView mIvUserProfileHeader;
-    @BindView(R.id.ivUserProfile) ImageView mIvUserProfile;
-    @BindView(R.id.tvTitle) TextView mTvTitle;
+    @BindView(R.id.ivUserProfile) CircleImageView mIvUserProfile;
+    @BindView(R.id.tvDate) TextView mTvDate;
     @BindView(R.id.tvScreenName) TextView mTvScreenName;
     @BindView(R.id.tvDescription) TextView mTvDescription;
     @BindView(R.id.tvFollowingNumber) TextView mTvFollowingNumber;
@@ -55,8 +56,6 @@ public class UserProfileView extends Fragment {
 
         Bundle bundle = getArguments();
         mTweet = Parcels.unwrap(bundle.getParcelable("tweetextra"));
-
-        Timber.d("oncreate");
     }
 
     @Override
@@ -65,9 +64,37 @@ public class UserProfileView extends Fragment {
 
         mUnbinder = ButterKnife.bind(UserProfileView.this, view);
 
-
+        populateFields();
 
         return view;
+    }
+
+
+/*
+    @BindView(R.id.ivUserProfileHeader) ImageView mIvUserProfileHeader;
+    @BindView(R.id.ivUserProfile) ImageView mIvUserProfile;
+    @BindView(R.id.tvTitle) TextView mTvTitle;
+    @BindView(R.id.tvScreenName) TextView mTvScreenName;
+    @BindView(R.id.tvDescription) TextView mTvDescription;
+    @BindView(R.id.tvFollowingNumber) TextView mTvFollowingNumber;
+    @BindView(R.id.tvFollowersNumber) TextView mTvFollowersNumber;
+*/
+
+    private void populateFields() {
+        Glide.with(getActivity())
+                .load(mTweet.getUser().getProfileBackgroundImageUrl())
+                .into(mIvUserProfileHeader);
+
+        Glide.with(getActivity())
+                .load(mTweet.getUser().getProfileImageUrl())
+                .into(mIvUserProfile);
+
+        String formattedDate = Utilities.getRelativeTimeAgo(mTweet.getCreatedAt());
+        mTvDate.setText(formattedDate);
+        mTvScreenName.setText(mTweet.getUser().getScreenName());
+        mTvDescription.setText(mTweet.getBody());
+        mTvFollowersNumber.setText(String.valueOf(mTweet.getUser().getFollowersCount()));
+        mTvFollowingNumber.setText(String.valueOf(mTweet.getUser().getFollowingCount()));
     }
 
     @Override
