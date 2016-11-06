@@ -43,6 +43,7 @@ The following **additional** features are implemented:
 
 * [x] Replaced the listview with the recyclerview
 * [x] Uses butterknife for view injection
+* [x] Refreshes on the hometimeline fragment
 
 ## Video Walkthrough
 

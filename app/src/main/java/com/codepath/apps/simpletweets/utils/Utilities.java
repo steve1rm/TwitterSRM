@@ -1,5 +1,8 @@
 package com.codepath.apps.simpletweets.utils;
 
+import android.content.Context;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.text.format.DateUtils;
 
 import java.text.SimpleDateFormat;
@@ -11,6 +14,14 @@ import java.util.Locale;
  */
 
 public final class Utilities {
+
+    public static Boolean isNetworkAvailable(Context context) {
+        ConnectivityManager connectivityManager =
+                (ConnectivityManager)context.getSystemService(Context.CONNECTIVITY_SERVICE);
+        NetworkInfo activeNetworkInfo = connectivityManager.getActiveNetworkInfo();
+
+        return activeNetworkInfo != null && activeNetworkInfo.isConnected();
+    }
 
     public static String getTimeDifference(String rawJsonDate) {
         String time = "";

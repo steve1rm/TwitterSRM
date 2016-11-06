@@ -10,6 +10,7 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
 
 import com.codepath.apps.simpletweets.R;
 import com.codepath.apps.simpletweets.TwitterApplication;
@@ -17,6 +18,7 @@ import com.codepath.apps.simpletweets.TwitterClient;
 import com.codepath.apps.simpletweets.adapters.HometimelineAdapter;
 import com.codepath.apps.simpletweets.models.Tweet;
 import com.codepath.apps.simpletweets.utils.EndlessRecyclerViewScrollListener;
+import com.codepath.apps.simpletweets.utils.Utilities;
 import com.loopj.android.http.JsonHttpResponseHandler;
 
 import org.json.JSONArray;
@@ -37,7 +39,6 @@ public class HomeTimelineFragment extends Fragment {
     private TwitterClient mTwitterClient;
     private String mMaxId;
     private HometimelineAdapter mHometimeAdapter;
-    private EndlessRecyclerViewScrollListener mEndlessRecyclerViewScrollListener;
 
     @BindView(R.id.rvHometimeline) RecyclerView mRvHometimeline;
     @BindView(R.id.swipeContainer) SwipeRefreshLayout mSwipeRefreshLayout;
@@ -61,6 +62,7 @@ public class HomeTimelineFragment extends Fragment {
         mUnbinder = ButterKnife.bind(HomeTimelineFragment.this, view);
 
         setupRecylcerView();
+
         setupSwipeRefresh();
 
         return view;
@@ -90,12 +92,12 @@ public class HomeTimelineFragment extends Fragment {
     private void setupEndlessScrolling(LinearLayoutManager linearLayoutManager) {
         Timber.d("setupEndlessScrolling");
 
-        mEndlessRecyclerViewScrollListener = new EndlessRecyclerViewScrollListener(linearLayoutManager) {
+        final EndlessRecyclerViewScrollListener mEndlessRecyclerViewScrollListener = new EndlessRecyclerViewScrollListener(linearLayoutManager) {
             @Override
             public void onLoadMore(int page, int totalItemsCount, RecyclerView view) {
                 Timber.d("onLoadMore page %d [%s]", page, mMaxId);
                 mMaxId = mHometimeAdapter.getMaxId();
-            //    populateHomeTimeHistory(15, mMaxId);
+                //    populateHomeTimeHistory(15, mMaxId);
             }
         };
         mRvHometimeline.addOnScrollListener(mEndlessRecyclerViewScrollListener);
@@ -104,58 +106,74 @@ public class HomeTimelineFragment extends Fragment {
     private void populateHomeTimelineRefresh(int count, int since_id) {
         Timber.d("populateHomeTimeline");
 
-        mTwitterClient.getHomeTimeline(count, since_id, new JsonHttpResponseHandler() {
-            @Override
-            public void onFailure(int statusCode, Header[] headers, String responseString, Throwable throwable) {
-                Timber.e(throwable, "onFailure statuscode %d throwable %s responseString %s", statusCode, throwable.getMessage(), responseString);
-            }
+        if(Utilities.isNetworkAvailable(getActivity())) {
+            mTwitterClient.getHomeTimeline(count, since_id, new JsonHttpResponseHandler() {
+                @Override
+                public void onFailure(int statusCode, Header[] headers, String responseString, Throwable throwable) {
+                    Timber.e(throwable, "onFailure statuscode %d throwable %s responseString %s", statusCode, throwable.getMessage(), responseString);
+                }
 
-            @Override
-            public void onSuccess(int statusCode, Header[] headers, JSONArray response) {
-                mHometimeAdapter.clearAll();
-                mHometimeAdapter.addAll(Tweet.fromJSONArray(response));
-                mSwipeRefreshLayout.setRefreshing(false);
-                mMaxId = mHometimeAdapter.getMaxId();
+                @Override
+                public void onSuccess(int statusCode, Header[] headers, JSONArray response) {
+                    mHometimeAdapter.clearAll();
+                    mHometimeAdapter.addAll(Tweet.fromJSONArray(response));
+                    mSwipeRefreshLayout.setRefreshing(false);
+                    mMaxId = mHometimeAdapter.getMaxId();
 
-                Timber.d("onSuccess Home Timeline: [%s] %s", mMaxId, response.toString());
-            }
-        });
+                    Timber.d("onSuccess Home Timeline: [%s] %s", mMaxId, response.toString());
+                }
+            });
+        }
+        else {
+            Toast.makeText(getActivity(), "Network Unavailable - check valid connection", Toast.LENGTH_LONG).show();
+            mSwipeRefreshLayout.setRefreshing(false);
+        }
     }
 
     private void populateHomeTimeline(int count, int since_id) {
         Timber.d("populateHomeTimeline");
 
-        mTwitterClient.getHomeTimeline(count, since_id, new JsonHttpResponseHandler() {
-            @Override
-            public void onFailure(int statusCode, Header[] headers, String responseString, Throwable throwable) {
-                Timber.e(throwable, "onFailure statuscode %d throwable %s responseString %s", statusCode, throwable.getMessage(), responseString);
-            }
+        if(Utilities.isNetworkAvailable(getActivity())) {
+            mTwitterClient.getHomeTimeline(count, since_id, new JsonHttpResponseHandler() {
+                @Override
+                public void onFailure(int statusCode, Header[] headers, String responseString, Throwable throwable) {
+                    Timber.e(throwable, "onFailure statuscode %d throwable %s responseString %s", statusCode, throwable.getMessage(), responseString);
+                }
 
-            @Override
-            public void onSuccess(int statusCode, Header[] headers, JSONArray response) {
-                mHometimeAdapter.addAll(Tweet.fromJSONArray(response));
-                mMaxId = mHometimeAdapter.getMaxId();
-                Timber.d("onSuccess Home Timeline: [%s] %s", mMaxId, response.toString());
-            }
-        });
+                @Override
+                public void onSuccess(int statusCode, Header[] headers, JSONArray response) {
+                    mHometimeAdapter.addAll(Tweet.fromJSONArray(response));
+                    mMaxId = mHometimeAdapter.getMaxId();
+                    Timber.d("onSuccess Home Timeline: [%s] %s", mMaxId, response.toString());
+                }
+            });
+        }
+        else {
+            Toast.makeText(getActivity(), "Network Unavailable - check valid connection", Toast.LENGTH_LONG).show();
+        }
     }
 
     private void populateHomeTimeHistory(int count, final String maxId) {
         Timber.d("populateHomeTimeHistory");
 
-        mTwitterClient.getHomeTimelineExt(count, maxId, new JsonHttpResponseHandler() {
-            @Override
-            public void onSuccess(int statusCode, Header[] headers, JSONArray response) {
-                mHometimeAdapter.addAll(Tweet.fromJSONArray(response));
-                mMaxId = mHometimeAdapter.getMaxId();
-                Timber.d("onSuccess Home Timeline: [%s] %s", mMaxId, response.toString());
-            }
+        if(Utilities.isNetworkAvailable(getActivity())) {
+            mTwitterClient.getHomeTimelineExt(count, maxId, new JsonHttpResponseHandler() {
+                @Override
+                public void onSuccess(int statusCode, Header[] headers, JSONArray response) {
+                    mHometimeAdapter.addAll(Tweet.fromJSONArray(response));
+                    mMaxId = mHometimeAdapter.getMaxId();
+                    Timber.d("onSuccess Home Timeline: [%s] %s", mMaxId, response.toString());
+                }
 
-            @Override
-            public void onFailure(int statusCode, Header[] headers, String responseString, Throwable throwable) {
-                Timber.e(throwable, "onFailure statuscode %d throwable %s responseString %s", statusCode, throwable.getMessage(), responseString);
-            }
-        });
+                @Override
+                public void onFailure(int statusCode, Header[] headers, String responseString, Throwable throwable) {
+                    Timber.e(throwable, "onFailure statuscode %d throwable %s responseString %s", statusCode, throwable.getMessage(), responseString);
+                }
+            });
+        }
+        else {
+            Toast.makeText(getActivity(), "Network Unavailable - check valid connection", Toast.LENGTH_LONG).show();
+        }
     }
 
     @Override
