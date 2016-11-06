@@ -3,6 +3,7 @@ package com.codepath.apps.simpletweets.fragments;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -39,6 +40,8 @@ public class HomeTimelineFragment extends Fragment {
     private EndlessRecyclerViewScrollListener mEndlessRecyclerViewScrollListener;
 
     @BindView(R.id.rvHometimeline) RecyclerView mRvHometimeline;
+    @BindView(R.id.swipeContainer) SwipeRefreshLayout mSwipeRefreshLayout;
+
     private Unbinder mUnbinder;
 
     @Override
@@ -58,8 +61,18 @@ public class HomeTimelineFragment extends Fragment {
         mUnbinder = ButterKnife.bind(HomeTimelineFragment.this, view);
 
         setupRecylcerView();
+        setupSwipeRefresh();
 
         return view;
+    }
+
+    private void setupSwipeRefresh() {
+        mSwipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                populateHomeTimelineRefresh(20, 1);
+            }
+        });
     }
 
     private void setupRecylcerView() {
@@ -86,6 +99,27 @@ public class HomeTimelineFragment extends Fragment {
             }
         };
         mRvHometimeline.addOnScrollListener(mEndlessRecyclerViewScrollListener);
+    }
+
+    private void populateHomeTimelineRefresh(int count, int since_id) {
+        Timber.d("populateHomeTimeline");
+
+        mTwitterClient.getHomeTimeline(count, since_id, new JsonHttpResponseHandler() {
+            @Override
+            public void onFailure(int statusCode, Header[] headers, String responseString, Throwable throwable) {
+                Timber.e(throwable, "onFailure statuscode %d throwable %s responseString %s", statusCode, throwable.getMessage(), responseString);
+            }
+
+            @Override
+            public void onSuccess(int statusCode, Header[] headers, JSONArray response) {
+                mHometimeAdapter.clearAll();
+                mHometimeAdapter.addAll(Tweet.fromJSONArray(response));
+                mSwipeRefreshLayout.setRefreshing(false);
+                mMaxId = mHometimeAdapter.getMaxId();
+
+                Timber.d("onSuccess Home Timeline: [%s] %s", mMaxId, response.toString());
+            }
+        });
     }
 
     private void populateHomeTimeline(int count, int since_id) {

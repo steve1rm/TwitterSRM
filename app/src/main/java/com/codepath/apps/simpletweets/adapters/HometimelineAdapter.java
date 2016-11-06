@@ -58,6 +58,11 @@ public class HometimelineAdapter extends RecyclerView.Adapter<HometimelineAdapte
         notifyItemRangeInserted(0, tweets.size());
     }
 
+    public void clearAll() {
+        mTweetList.clear();
+        notifyDataSetChanged();
+    }
+
     public Tweet getLastTweet() {
         if(!mTweetList.isEmpty()) {
             return mTweetList.get(mTweetList.size() - 1);
