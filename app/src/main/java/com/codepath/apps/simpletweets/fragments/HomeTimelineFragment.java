@@ -44,7 +44,7 @@ public class HomeTimelineFragment extends Fragment {
         void onProgressBarShow();
     }
     private ProgressBarListener mProgressBarListener;
-
+    private EndlessRecyclerViewScrollListener mEndlessRecyclerViewScrollListener;
     private TwitterClient mTwitterClient;
     private String mMaxId;
     private HometimelineAdapter mHometimeAdapter;
@@ -114,12 +114,12 @@ public class HomeTimelineFragment extends Fragment {
     private void setupEndlessScrolling(LinearLayoutManager linearLayoutManager) {
         Timber.d("setupEndlessScrolling");
 
-        final EndlessRecyclerViewScrollListener mEndlessRecyclerViewScrollListener = new EndlessRecyclerViewScrollListener(linearLayoutManager) {
+        mEndlessRecyclerViewScrollListener = new EndlessRecyclerViewScrollListener(linearLayoutManager) {
             @Override
             public void onLoadMore(int page, int totalItemsCount, RecyclerView view) {
                 Timber.d("onLoadMore page %d [%s]", page, mMaxId);
                 mMaxId = mHometimeAdapter.getMaxId();
-                //    populateHomeTimeHistory(15, mMaxId);
+                populateHomeTimeHistory(15, mMaxId);
             }
         };
         mRvHometimeline.addOnScrollListener(mEndlessRecyclerViewScrollListener);
@@ -141,6 +141,7 @@ public class HomeTimelineFragment extends Fragment {
                 public void onSuccess(int statusCode, Header[] headers, JSONArray response) {
                     mHometimeAdapter.clearAll();
                     mHometimeAdapter.addAll(Tweet.fromJSONArray(response));
+
                     mSwipeRefreshLayout.setRefreshing(false);
                     mMaxId = mHometimeAdapter.getMaxId();
                     mProgressBarListener.onProgressBarHide();
@@ -182,10 +183,13 @@ public class HomeTimelineFragment extends Fragment {
         mProgressBarListener.onProgressBarShow();
 
         if(Utilities.isNetworkAvailable(getActivity())) {
-            mTwitterClient.getHomeTimelineExt(count, maxId, new JsonHttpResponseHandler() {
+            mTwitterClient.getHomeTimelineHistory(count, maxId, new JsonHttpResponseHandler() {
                 @Override
                 public void onSuccess(int statusCode, Header[] headers, JSONArray response) {
+                    mHometimeAdapter.clearAll();
                     mHometimeAdapter.addAll(Tweet.fromJSONArray(response));
+                    mEndlessRecyclerViewScrollListener.resetState();
+
                     mMaxId = mHometimeAdapter.getMaxId();
                     Timber.d("onSuccess Home Timeline: [%s] %s", mMaxId, response.toString());
                     mProgressBarListener.onProgressBarHide();

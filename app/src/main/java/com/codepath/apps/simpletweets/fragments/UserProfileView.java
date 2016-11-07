@@ -3,6 +3,7 @@ package com.codepath.apps.simpletweets.fragments;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -11,6 +12,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 import com.codepath.apps.simpletweets.R;
@@ -47,6 +49,7 @@ public class UserProfileView extends Fragment {
     @BindView(R.id.tvFollowingNumber) TextView mTvFollowingNumber;
     @BindView(R.id.tvFollowersNumber) TextView mTvFollowersNumber;
     @BindView(R.id.rvUserProfile) RecyclerView mRvUserProfile;
+    @BindView(R.id.swipeContainer) SwipeRefreshLayout mSwipeRefreshLayout;
 
     private HometimelineAdapter mHometimeAdapter;
     private EndlessRecyclerViewScrollListener mEndlessRecyclerViewScrollListener;
@@ -82,12 +85,51 @@ public class UserProfileView extends Fragment {
         mUnbinder = ButterKnife.bind(UserProfileView.this, view);
 
         setupRecylcerView();
-
+        setupSwipeRefresh();
         populateFields();
 
-        populateHomeTimeline(20, 1);
+        populateUserTimeline(20, 1);
 
         return view;
+    }
+
+    private void setupSwipeRefresh() {
+        mSwipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                populateUserTimelineRefresh(20, 1);
+            }
+        });
+    }
+
+    private void populateUserTimelineRefresh(int count, int since_id) {
+        Timber.d("populateHomeTimeline");
+   //     mProgressBarListener.onProgressBarShow();
+
+        if(Utilities.isNetworkAvailable(getActivity())) {
+            TwitterApplication.getRestClient().getUserTimeline(mTweet.getUser().getScreenName(), new JsonHttpResponseHandler() {
+                @Override
+                public void onFailure(int statusCode, Header[] headers, String responseString, Throwable throwable) {
+                    Timber.e(throwable, "onFailure statuscode %d throwable %s responseString %s", statusCode, throwable.getMessage(), responseString);
+             //       mProgressBarListener.onProgressBarHide();
+                }
+
+                @Override
+                public void onSuccess(int statusCode, Header[] headers, JSONArray response) {
+                    mHometimeAdapter.clearAll();
+                    mHometimeAdapter.addAll(Tweet.fromJSONArray(response));
+
+                    mSwipeRefreshLayout.setRefreshing(false);
+                    mMaxId = mHometimeAdapter.getMaxId();
+             //       mProgressBarListener.onProgressBarHide();
+                    Timber.d("onSuccess Home Timeline: [%s] %s", mMaxId, response.toString());
+                }
+            });
+        }
+        else {
+            Toast.makeText(getActivity(), "Network Unavailable - check valid connection", Toast.LENGTH_LONG).show();
+            mSwipeRefreshLayout.setRefreshing(false);
+        }
     }
 
     private void setupRecylcerView() {
@@ -110,13 +152,13 @@ public class UserProfileView extends Fragment {
             public void onLoadMore(int page, int totalItemsCount, RecyclerView view) {
                 Timber.d("onLoadMore page %d [%s]", page, mMaxId);
                 mMaxId = mHometimeAdapter.getMaxId();
-                //    populateHomeTimeHistory(15, mMaxId);
+                populateHomeTimeHistory(15, mMaxId);
             }
         };
         mRvUserProfile.addOnScrollListener(mEndlessRecyclerViewScrollListener);
     }
 
-    private void populateHomeTimeline(int count, int since_id) {
+    private void populateUserTimeline(int count, int since_id) {
         Timber.d("populateHomeTimeline");
 
         TwitterApplication.getRestClient().getUserTimeline(mTweet.getUser().getScreenName(), new JsonHttpResponseHandler() {
@@ -137,10 +179,13 @@ public class UserProfileView extends Fragment {
     private void populateHomeTimeHistory(int count, final String maxId) {
         Timber.d("populateHomeTimeHistory");
 
-        TwitterApplication.getRestClient().getHomeTimelineExt(count, maxId, new JsonHttpResponseHandler() {
+        TwitterApplication.getRestClient().getUserTimelineHistory(mTweet.getUser().getScreenName(), maxId, new JsonHttpResponseHandler() {
             @Override
             public void onSuccess(int statusCode, Header[] headers, JSONArray response) {
+                mHometimeAdapter.clearAll();
                 mHometimeAdapter.addAll(Tweet.fromJSONArray(response));
+                mEndlessRecyclerViewScrollListener.resetState();
+
                 mMaxId = mHometimeAdapter.getMaxId();
                 Timber.d("onSuccess Home Timeline: [%s] %s", mMaxId, response.toString());
             }
