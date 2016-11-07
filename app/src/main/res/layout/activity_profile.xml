@@ -13,13 +13,15 @@
     <RelativeLayout
         android:id="@+id/rlHeader"
         android:layout_width="match_parent"
-        android:layout_height="200dp"
+        android:layout_height="160dp"
         android:layout_below="@id/tbTweeter">
 
         <ImageView
             android:id="@+id/ivProfileImage"
-            android:layout_width="75dp"
-            android:layout_height="75dp"
+            android:layout_width="60dp"
+            android:layout_height="60dp"
+            android:scaleType="centerCrop"
+            android:adjustViewBounds="true"
             android:layout_marginRight="10dp"
             android:layout_alignParentLeft="true"
             android:layout_alignParentTop="true" />
@@ -30,8 +32,9 @@
             android:layout_height="wrap_content"
             android:layout_toRightOf="@id/ivProfileImage"
             android:layout_toEndOf="@id/ivProfileImage"
-            android:text="Name"
-            android:textSize="16sp"/>
+            android:text="Steve"
+            android:textSize="18sp"
+            android:fontFamily="sans-serif-medium"/>
 
         <TextView
             android:id="@+id/tvTagLine"
@@ -39,8 +42,52 @@
             android:layout_height="wrap_content"
             android:layout_alignLeft="@id/tvName"
             android:layout_alignStart="@id/tvName"
+            android:layout_below="@id/tvName"
             android:text="Tagline"
-            android:textSize="12sp"/>
+            android:textSize="16sp"
+            android:fontFamily="sans-serif-condensed"/>
+
+        <Space
+            android:id="@+id/placeHolder"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:layout_centerInParent="true" />
+
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/ic_reply_white_24dp"
+            android:layout_below="@id/placeHolder"
+            android:layout_marginLeft="32dp"
+            android:layout_marginStart="32dp"/>
+
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/ic_reply_white_24dp"
+            android:layout_below="@id/placeHolder"
+            android:layout_marginLeft="32dp"
+            android:layout_marginStart="32dp"/>
+
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/ic_star_white_24dp"
+            android:layout_below="@id/placeHolder"
+            android:layout_alignParentEnd="true"
+            android:layout_alignParentRight="true"
+            android:layout_marginRight="32dp"
+            android:layout_marginEnd="32dp"/>
+
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/ic_favorite_white_24dp"
+            android:layout_centerInParent="true"
+            android:layout_below="@id/placeHolder"
+            android:layout_marginLeft="32dp"
+            android:layout_marginStart="32dp"/>
+
     </RelativeLayout>
 
     <LinearLayout
@@ -48,20 +95,48 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignBottom="@id/rlHeader"
-        android:orientation="horizontal">
+        android:orientation="horizontal"
+        android:paddingBottom="16dp">
 
         <TextView
             android:id="@+id/tvFollowers"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="5 Followers"/>
+            android:layout_marginLeft="16dp"
+            android:layout_marginStart="16dp"
+            android:text="23"
+            android:textSize="18sp"
+            android:fontFamily="sans-serif"/>
+
+        <TextView
+            android:id="@+id/tvFollowersNumbers"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="8dp"
+            android:layout_marginStart="8dp"
+            android:textSize="18sp"
+            android:text="Followers"
+            android:fontFamily="sans-serif"/>
 
         <TextView
             android:id="@+id/tvFollowing"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginLeft="20dp"
-            android:text="5 Following"/>
+            android:layout_marginLeft="16dp"
+            android:layout_marginStart="16dp"
+            android:text="23"
+            android:textSize="18sp"
+            android:fontFamily="sans-serif"/>
+
+        <TextView
+            android:id="@+id/tvFollowingNUmber"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="8dp"
+            android:layout_marginStart="8dp"
+            android:textSize="18sp"
+            android:text="Followers"
+            android:fontFamily="sans-serif"/>
     </LinearLayout>
 
     <FrameLayout
