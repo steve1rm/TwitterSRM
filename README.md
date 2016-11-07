@@ -28,7 +28,7 @@ The following **optional** features are implemented:
   * [ ] The user that wrote the original tweet is automatically "@" replied in compose
 * [ ] User can click on a tweet to be **taken to a "detail view"** of that tweet
  * [ ] User can take favorite (and unfavorite) or retweet actions on a tweet
-* [ ] Improve the user interface and theme the app to feel twitter branded
+* [*] Improve the user interface and theme the app to feel twitter branded
 * [ ] User can **search for tweets matching a particular query** and see results
 * [ ] Usernames and hashtags are styled and clickable within tweets [using clickable spans](http://guides.codepath.com/android/Working-with-the-TextView#creating-clickable-styled-spans)
 
@@ -44,6 +44,7 @@ The following **additional** features are implemented:
 * [x] Replaced the listview with the recyclerview for the hometimeline
 * [x] Uses butterknife for view injection
 * [x] Refreshes on the hometimeline fragment
+* [x] Uses glide for image loading
 
 ## Video Walkthrough
 
