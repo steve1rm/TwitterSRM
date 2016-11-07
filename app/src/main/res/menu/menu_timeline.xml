@@ -3,7 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto">
     <item
         android:id="@+id/miProfile"
-        android:orderInCategory="100"
+        android:orderInCategory="90"
         android:title="@string/profile"
         android:icon="@drawable/ic_profile"
         app:showAsAction="ifRoom"
@@ -14,4 +14,12 @@
         android:icon="@android:drawable/ic_menu_send"
         app:showAsAction="ifRoom"
         android:title="@string/compose"/>
+
+    <item
+        android:id="@+id/muActionProgress"
+        android:title="Loading.."
+        android:visible="false"
+        android:orderInCategory="100"
+        app:showAsAction="always"
+        app:actionLayout="@layout/action_view_progress"/>
 </menu>

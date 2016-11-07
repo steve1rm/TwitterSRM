@@ -5,11 +5,13 @@ import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
+import android.support.v4.view.MenuItemCompat;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.ProgressBar;
 
 import com.astuetz.PagerSlidingTabStrip;
 import com.codepath.apps.simpletweets.fragments.HomeTimelineFragment;
@@ -19,19 +21,11 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.Unbinder;
 
-public class TimelineActivity extends AppCompatActivity {
-
-/*
-    private List<Tweet> tweetList;
-    private ListView lvTweets;
-    private TweetsAdapter mTweetsAdapter;
-
-    private TweetsListFragment fragmentTweetsList;
-
-    @BindView(R.id.swipeContainer) SwipeRefreshLayout swipeContainer;
-*/
+public class TimelineActivity extends AppCompatActivity implements HomeTimelineFragment.ProgressBarListener {
 
     private Unbinder mUnbinder;
+    private MenuItem mMuActionProgressItem;
+
     @BindView(R.id.viewpager) ViewPager mViewpager;
     @BindView(R.id.tabs) PagerSlidingTabStrip mTabs;
     @BindView(R.id.tbTweeter) Toolbar mToolbar;
@@ -43,158 +37,30 @@ public class TimelineActivity extends AppCompatActivity {
 
         mUnbinder = ButterKnife.bind(TimelineActivity.this);
 
+        /** Setup tool bar */
         setupToolbar();
 
-        /* Set the viewpager adapter for the pager */
+        /** Set the viewpager adapter for the pager */
         TweetPagerAdapter tweetPagerAdapter = new TweetPagerAdapter(getSupportFragmentManager());
         mViewpager.setAdapter(tweetPagerAdapter);
 
-        /* Attach the pager tabs to the viewpager */
+        /** Attach the pager tabs to the viewpager */
         mTabs.setViewPager(mViewpager);
-
-/*
-        mUnbinder = ButterKnife.bind(TimelineActivity.this);
-
-        if(savedInstanceState == null) {
-            */
-/* Pull the fragment out of the layout *//*
-
-            fragmentTweetsList =
-                    (TweetsListFragment) getSupportFragmentManager().findFragmentById(R.id.fragment_timeline);
-        }
-*/
-
-/*
-        setupToolbar();
-
-        lvTweets = (ListView)findViewById(R.id.lvTweets);
-        lvTweets.setOnScrollListener(new EndlessScrollListener() {
-            @Override
-            public boolean onLoadMore(int page, int totalItemsCount) {
-                Timber.d("onLoadMore page %d totalItemsCount %d", page, totalItemsCount);
-                loadNextDataFromApi(page);
-                return true;
-            }
-        });
-
-        String createdAt = "Sun Oct 23 05:50:13 +0000 2016";
-        String date = Utilities.getTimeDifference(createdAt);
-
-        */
-/* Create the list adapter that will be our data source *//*
-
-        tweetList = new ArrayList<>();
-        mTweetsAdapter = new TweetsAdapter(TimelineActivity.this, tweetList);
-        lvTweets.setAdapter(mTweetsAdapter);
-
-        */
-/* Singleton *//*
-
-        //mTwitterClient = TwitterApplication.getRestClient();
-
-       //
-
-        swipeContainer.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
-            @Override
-            public void onRefresh() {
-                refreshHomeTimeline(0);
-            }
-        });
-*/
     }
 
     private void setupToolbar() {
         setSupportActionBar(mToolbar);
     }
 
-
-  /*  private void refreshHomeTimeline(int page) {
-        mTwitterClient.getHomeTimeline(page, new JsonHttpResponseHandler() {
-            @Override
-            public void onFailure(int statusCode, Header[] headers, String responseString, Throwable throwable) {
-                Timber.e(throwable, "statusCode %d", statusCode);
-            }
-
-            @Override
-            public void onSuccess(int statusCode, Header[] headers, JSONArray response) {
-                mTweetsAdapter.clear();
-                mTweetsAdapter.addAll(Tweet.fromJSONArray(response));
-                swipeContainer.setRefreshing(false);
-                Timber.d("onSuccess Home Timeline: %s", response.toString());
-            }
-        });
-    }
-*/
- /*   private void setupToolbar() {
-        setSupportActionBar(mToolbar);
-    }
-*/
-
-  /*  private void loadNextDataFromApi(int pageCount) {
-        Timber.d("loadNextDataFromApi %d", pageCount);
-        mTwitterClient.getHomeTimeline(pageCount, new JsonHttpResponseHandler() {
-            @Override
-            public void onSuccess(int statusCode, Header[] headers, JSONArray response) {
-                *//* deserialize json *//*
-                mTweetsAdapter.addAll(Tweet.fromJSONArray(response));
-                Timber.d("loadNextDataFromAPI onSuccess %s %d", response.toString(), tweetList.size());
-            }
-
-            @Override
-            public void onFailure(int statusCode, Header[] headers, Throwable throwable, JSONObject errorResponse) {
-                Timber.e("loadNextDataFromAPI onFailure %s", errorResponse.toString());
-            }
-        });
+    @Override
+    public void onProgressBarHide() {
+        mMuActionProgressItem.setVisible(false);
     }
 
-  */  /* Send an API request to get the timeline json
-    *  Fill the listview by creating the tweet objects from the json */
-  /*  private void populateTimeline() {
-        mTwitterClient.getUserTimeline(new JsonHttpResponseHandler() {
-            @Override
-            public void onSuccess(int statusCode, Header[] headers, JSONArray response) {
-                *//* deserialize json *//*
-                mTweetsAdapter.addAll(Tweet.fromJSONArray(response));
-                Timber.d("onSuccess %s %d", response.toString(), tweetList.size());
-            }
-
-            @Override
-            public void onFailure(int statusCode, Header[] headers, Throwable throwable, JSONObject errorResponse) {
-                Timber.e("onFailure %s", errorResponse.toString());
-            }
-        });
+    @Override
+    public void onProgressBarShow() {
+       mMuActionProgressItem.setVisible(true);
     }
-*/
- /*   public void processIntent(Intent data) {
-        *//* Sanity check for corrupt data *//*
-        if(data != null) {
-            if(data.hasExtra(SendActivity.STATUSMSG_KEY)) {
-                String message = data.getStringExtra(SendActivity.STATUSMSG_KEY);
-                createTweet(message);
-            }
-        }
-    }
-*/
- /*   private void createTweet(String message) {
-        Timber.d("onResume: load more tweets %d", tweetList.size());
-        Tweet tweet = new Tweet();
-
-        DateFormat dateFormat = new SimpleDateFormat("EEE, d MMM HH:mm:ss Z yyyy", Locale.getDefault());
-
-        tweet.setCreatedAt(dateFormat.format(Calendar.getInstance().getTime()));
-        tweet.setBody(message);
-        tweet.setDate(dateFormat.format(Calendar.getInstance().getTime()));
-
-        User user = new User();
-        user.setProfileImageUrl("http://a0.twimg.com/profile_images/2284174872/7df3h38zabcvjylnyfe3_normal.png");
-        user.setScreenName("Steve mason");
-        user.setName("Steve Mason");
-        tweet.setUser(user);
-
-        mTweetsAdapter.add(tweet);
-        mTweetsAdapter.notifyDataSetChanged();
-        lvTweets.invalidateViews();
-    }*/
 
     public void onProfileView(MenuItem menuItem) {
         Intent intent = new Intent(TimelineActivity.this, ProfileActivity.class);
@@ -204,7 +70,16 @@ public class TimelineActivity extends AppCompatActivity {
     @Override
     protected void onResume() {
         super.onResume();
+     //   mMuActionProgressItem.setVisible(true);
+    }
 
+    @Override
+    public boolean onPrepareOptionsMenu(Menu menu) {
+        mMuActionProgressItem = menu.findItem(R.id.muActionProgress);
+
+        ProgressBar progressBar = (ProgressBar) MenuItemCompat.getActionView(mMuActionProgressItem);
+
+        return super.onPrepareOptionsMenu(menu);
     }
 
     // Inflate the menu; this adds items to the action bar if it is present.
