@@ -44,7 +44,7 @@ public class SendActivity extends AppCompatActivity {
             @Override
             public void onSuccess(int statusCode, Header[] headers, JSONArray response) {
                 Timber.d("onSuccess Tweeting statuscode: %d responseBody %s", statusCode, response.toString());
-                finish();
+                //finish();
             }
         });
     }
