@@ -131,7 +131,6 @@ public class HomeTimelineFragment extends Fragment {
     private void populateHomeTimelineRefresh(int count, int since_id) {
         Timber.d("populateHomeTimeline");
 
-
         if(Utilities.isNetworkAvailable(getActivity())) {
             mProgressBarListener.onProgressBarShow();
             mSwipeRefreshLayout.setRefreshing(true);
@@ -167,14 +166,12 @@ public class HomeTimelineFragment extends Fragment {
 
         if(Utilities.isNetworkAvailable(getActivity())) {
             mProgressBarListener.onProgressBarShow();
-            mSwipeRefreshLayout.setRefreshing(true);
 
             mTwitterClient.getHomeTimeline(count, since_id, new JsonHttpResponseHandler() {
                 @Override
                 public void onFailure(int statusCode, Header[] headers, String responseString, Throwable throwable) {
                     Timber.e(throwable, "onFailure statuscode %d throwable %s responseString %s", statusCode, throwable.getMessage(), responseString);
                     mProgressBarListener.onProgressBarHide();
-                    mSwipeRefreshLayout.setRefreshing(false);
                 }
 
                 @Override
@@ -183,7 +180,6 @@ public class HomeTimelineFragment extends Fragment {
                     mMaxId = mHometimeAdapter.getMaxId();
                     Timber.d("onSuccess Home Timeline: [%s] %s", mMaxId, response.toString());
                     mProgressBarListener.onProgressBarHide();
-                    mSwipeRefreshLayout.setRefreshing(false);
                 }
             });
         }
@@ -198,7 +194,6 @@ public class HomeTimelineFragment extends Fragment {
 
         if(Utilities.isNetworkAvailable(getActivity())) {
             mProgressBarListener.onProgressBarShow();
-            mSwipeRefreshLayout.setRefreshing(true);
 
             mTwitterClient.getHomeTimelineHistory(count, maxId, new JsonHttpResponseHandler() {
                 @Override
@@ -210,14 +205,12 @@ public class HomeTimelineFragment extends Fragment {
                     mMaxId = mHometimeAdapter.getMaxId();
                     Timber.d("onSuccess Home Timeline: [%s] %s", mMaxId, response.toString());
                     mProgressBarListener.onProgressBarHide();
-                    mSwipeRefreshLayout.setRefreshing(false);
                 }
 
                 @Override
                 public void onFailure(int statusCode, Header[] headers, String responseString, Throwable throwable) {
                     Timber.e(throwable, "onFailure statuscode %d throwable %s responseString %s", statusCode, throwable.getMessage(), responseString);
                     mProgressBarListener.onProgressBarHide();
-                    mSwipeRefreshLayout.setRefreshing(false);
                 }
             });
         }

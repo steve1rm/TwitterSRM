@@ -14,7 +14,6 @@ import android.widget.Toast;
 
 import com.codepath.apps.simpletweets.R;
 import com.codepath.apps.simpletweets.TwitterApplication;
-import com.codepath.apps.simpletweets.TwitterClient;
 import com.codepath.apps.simpletweets.adapters.HometimelineAdapter;
 import com.codepath.apps.simpletweets.models.Tweet;
 import com.codepath.apps.simpletweets.utils.EndlessRecyclerViewScrollListener;
@@ -36,8 +35,6 @@ import timber.log.Timber;
  */
 
 public class MentionsTimelineFragment extends Fragment {
-    private TwitterClient mTwitterClient;
-
     private EndlessRecyclerViewScrollListener mEndlessRecyclerViewScrollListener;
     private String mMaxId;
     private HometimelineAdapter mHometimeAdapter;
@@ -49,10 +46,6 @@ public class MentionsTimelineFragment extends Fragment {
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
-        mTwitterClient = TwitterApplication.getRestClient();
-
-        populateMentionsTimeline(25, 1);
     }
 
     @Nullable
@@ -63,6 +56,8 @@ public class MentionsTimelineFragment extends Fragment {
         mUnbinder = ButterKnife.bind(MentionsTimelineFragment.this, view);
         setupRecylcerView();
         setupSwipeRefresh();
+
+        populateMentionsTimeline(25, 1);
 
         return view;
     }
@@ -141,11 +136,9 @@ public class MentionsTimelineFragment extends Fragment {
         Timber.d("populateMentionsTimeHistory");
 
         if(Utilities.isNetworkAvailable(getActivity())) {
-            mSwipeRefreshLayout.setRefreshing(true);
             TwitterApplication.getRestClient().getMentionsTimelineHistory(count, maxId, new JsonHttpResponseHandler() {
                 @Override
                 public void onSuccess(int statusCode, Header[] headers, JSONArray response) {
-                    mSwipeRefreshLayout.setRefreshing(false);
                     mHometimeAdapter.addAll(Tweet.fromJSONArray(response));
                     mEndlessRecyclerViewScrollListener.resetState();
 
@@ -156,7 +149,6 @@ public class MentionsTimelineFragment extends Fragment {
                 @Override
                 public void onFailure(int statusCode, Header[] headers, String responseString, Throwable throwable) {
                     Timber.e(throwable, "onFailure statuscode %d throwable %s responseString %s", statusCode, throwable.getMessage(), responseString);
-                    mSwipeRefreshLayout.setRefreshing(false);
                 }
             });
         }
