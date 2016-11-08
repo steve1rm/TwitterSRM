@@ -48,7 +48,6 @@ The following **additional** features are implemented:
 * [x] Uses timber for logging debug statments
 
 ## Video Walkthrough
-
 Here's a walkthrough of implemented user stories:
 
 <img src='https://github.com/steve1rm/TwitterSRM/blob/master/demo2.mp4' title='Video Walkthrough' width='' alt='Video Walkthrough' />
