@@ -1,6 +1,5 @@
 package com.codepath.apps.simpletweets.fragments;
 
-import android.content.Context;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -31,9 +30,6 @@ import butterknife.ButterKnife;
 import butterknife.Unbinder;
 import cz.msebera.android.httpclient.Header;
 import timber.log.Timber;
-
-import static android.os.Build.VERSION_CODES.M;
-import static java.util.Collections.addAll;
 
 /**
  * Created by steve on 11/3/16.
