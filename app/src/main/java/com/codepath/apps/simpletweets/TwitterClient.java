@@ -101,6 +101,15 @@ public class TwitterClient extends OAuthBaseClient {
         getClient().get(apiUrl, params, handler);
     }
 
+    public void getMentionsTimelineHistory(int count, String max_id, AsyncHttpResponseHandler handler) {
+        String apiUrl = getApiUrl("statuses/mentions_timeline.json");
+        RequestParams params = new RequestParams();
+        params.put("count", count);
+        params.put("max_id", max_id);
+        getClient().get(apiUrl, params, handler);
+    }
+
+
     public void getUserInfo(AsyncHttpResponseHandler handler) {
         Timber.d("getUserInfo");
         String apiUrl = getApiUrl("account/verify_credentials.json");

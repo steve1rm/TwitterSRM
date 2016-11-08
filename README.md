@@ -41,10 +41,11 @@ The following **bonus** features are implemented:
 
 The following **additional** features are implemented:
 
-* [x] Replaced the listview with the recyclerview for the hometimeline
+* [x] Replaced the listview with the recyclerview for the hometimeline and usertimeline
 * [x] Uses butterknife for view injection
 * [x] Refreshes on the hometimeline fragment
 * [x] Uses glide for image loading
+* [x] Uses timber for logging debug statments
 
 ## Video Walkthrough
 

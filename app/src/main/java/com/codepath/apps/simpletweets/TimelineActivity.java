@@ -54,12 +54,16 @@ public class TimelineActivity extends AppCompatActivity implements HomeTimelineF
 
     @Override
     public void onProgressBarHide() {
-        mMuActionProgressItem.setVisible(false);
+        if(mMuActionProgressItem != null) {
+            mMuActionProgressItem.setVisible(false);
+        }
     }
 
     @Override
     public void onProgressBarShow() {
-       mMuActionProgressItem.setVisible(true);
+        if(mMuActionProgressItem != null) {
+            mMuActionProgressItem.setVisible(true);
+        }
     }
 
     public void onProfileView(MenuItem menuItem) {

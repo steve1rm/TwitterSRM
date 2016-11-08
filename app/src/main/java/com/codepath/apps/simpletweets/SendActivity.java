@@ -27,6 +27,8 @@ public class SendActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        Timber.d("onCreate");
+
         setContentView(R.layout.activity_send);
 
         mUnbinder = ButterKnife.bind(SendActivity.this);

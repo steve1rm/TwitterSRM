@@ -5,7 +5,7 @@
         android:id="@+id/miProfile"
         android:orderInCategory="90"
         android:title="@string/profile"
-        android:icon="@drawable/ic_profile"
+        android:icon="@drawable/ic_profile_white"
         app:showAsAction="ifRoom"
         android:onClick="onProfileView"/>
 

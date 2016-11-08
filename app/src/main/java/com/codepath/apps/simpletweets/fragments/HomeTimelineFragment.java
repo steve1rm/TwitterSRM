@@ -51,7 +51,6 @@ public class HomeTimelineFragment extends Fragment {
 
     @BindView(R.id.rvHometimeline) RecyclerView mRvHometimeline;
     @BindView(R.id.swipeContainer) SwipeRefreshLayout mSwipeRefreshLayout;
-
     private Unbinder mUnbinder;
 
 
@@ -72,8 +71,6 @@ public class HomeTimelineFragment extends Fragment {
         super.onCreate(savedInstanceState);
 
         mTwitterClient = TwitterApplication.getRestClient();
-
-        populateHomeTimeline(15, 1);
     }
 
     @Nullable
@@ -84,8 +81,9 @@ public class HomeTimelineFragment extends Fragment {
         mUnbinder = ButterKnife.bind(HomeTimelineFragment.this, view);
 
         setupRecylcerView();
-
         setupSwipeRefresh();
+
+        populateHomeTimeline(15, 1);
 
         return view;
     }
@@ -117,9 +115,14 @@ public class HomeTimelineFragment extends Fragment {
         mEndlessRecyclerViewScrollListener = new EndlessRecyclerViewScrollListener(linearLayoutManager) {
             @Override
             public void onLoadMore(int page, int totalItemsCount, RecyclerView view) {
-                Timber.d("onLoadMore page %d [%s]", page, mMaxId);
-                mMaxId = mHometimeAdapter.getMaxId();
-                populateHomeTimeHistory(15, mMaxId);
+                if(page < 15) {
+                    Timber.d("onLoadMore page %d [%s]", page, mMaxId);
+                    mMaxId = mHometimeAdapter.getMaxId();
+                    populateHomeTimeHistory(15, mMaxId);
+                }
+                else {
+                    Timber.d("STOP onLoadMore page %d", page);
+                }
             }
         };
         mRvHometimeline.addOnScrollListener(mEndlessRecyclerViewScrollListener);
@@ -127,24 +130,28 @@ public class HomeTimelineFragment extends Fragment {
 
     private void populateHomeTimelineRefresh(int count, int since_id) {
         Timber.d("populateHomeTimeline");
-        mProgressBarListener.onProgressBarShow();
+
 
         if(Utilities.isNetworkAvailable(getActivity())) {
+            mProgressBarListener.onProgressBarShow();
+            mSwipeRefreshLayout.setRefreshing(true);
+
             mTwitterClient.getHomeTimeline(count, since_id, new JsonHttpResponseHandler() {
                 @Override
                 public void onFailure(int statusCode, Header[] headers, String responseString, Throwable throwable) {
                     Timber.e(throwable, "onFailure statuscode %d throwable %s responseString %s", statusCode, throwable.getMessage(), responseString);
                     mProgressBarListener.onProgressBarHide();
+                    mSwipeRefreshLayout.setRefreshing(false);
                 }
 
                 @Override
                 public void onSuccess(int statusCode, Header[] headers, JSONArray response) {
                     mHometimeAdapter.clearAll();
                     mHometimeAdapter.addAll(Tweet.fromJSONArray(response));
-
+                    mProgressBarListener.onProgressBarHide();
                     mSwipeRefreshLayout.setRefreshing(false);
                     mMaxId = mHometimeAdapter.getMaxId();
-                    mProgressBarListener.onProgressBarHide();
+
                     Timber.d("onSuccess Home Timeline: [%s] %s", mMaxId, response.toString());
                 }
             });
@@ -159,10 +166,15 @@ public class HomeTimelineFragment extends Fragment {
         Timber.d("populateHomeTimeline");
 
         if(Utilities.isNetworkAvailable(getActivity())) {
+            mProgressBarListener.onProgressBarShow();
+            mSwipeRefreshLayout.setRefreshing(true);
+
             mTwitterClient.getHomeTimeline(count, since_id, new JsonHttpResponseHandler() {
                 @Override
                 public void onFailure(int statusCode, Header[] headers, String responseString, Throwable throwable) {
                     Timber.e(throwable, "onFailure statuscode %d throwable %s responseString %s", statusCode, throwable.getMessage(), responseString);
+                    mProgressBarListener.onProgressBarHide();
+                    mSwipeRefreshLayout.setRefreshing(false);
                 }
 
                 @Override
@@ -170,6 +182,8 @@ public class HomeTimelineFragment extends Fragment {
                     mHometimeAdapter.addAll(Tweet.fromJSONArray(response));
                     mMaxId = mHometimeAdapter.getMaxId();
                     Timber.d("onSuccess Home Timeline: [%s] %s", mMaxId, response.toString());
+                    mProgressBarListener.onProgressBarHide();
+                    mSwipeRefreshLayout.setRefreshing(false);
                 }
             });
         }
@@ -180,9 +194,12 @@ public class HomeTimelineFragment extends Fragment {
 
     private void populateHomeTimeHistory(int count, final String maxId) {
         Timber.d("populateHomeTimeHistory");
-        mProgressBarListener.onProgressBarShow();
+
 
         if(Utilities.isNetworkAvailable(getActivity())) {
+            mProgressBarListener.onProgressBarShow();
+            mSwipeRefreshLayout.setRefreshing(true);
+
             mTwitterClient.getHomeTimelineHistory(count, maxId, new JsonHttpResponseHandler() {
                 @Override
                 public void onSuccess(int statusCode, Header[] headers, JSONArray response) {
@@ -193,12 +210,14 @@ public class HomeTimelineFragment extends Fragment {
                     mMaxId = mHometimeAdapter.getMaxId();
                     Timber.d("onSuccess Home Timeline: [%s] %s", mMaxId, response.toString());
                     mProgressBarListener.onProgressBarHide();
+                    mSwipeRefreshLayout.setRefreshing(false);
                 }
 
                 @Override
                 public void onFailure(int statusCode, Header[] headers, String responseString, Throwable throwable) {
                     Timber.e(throwable, "onFailure statuscode %d throwable %s responseString %s", statusCode, throwable.getMessage(), responseString);
                     mProgressBarListener.onProgressBarHide();
+                    mSwipeRefreshLayout.setRefreshing(false);
                 }
             });
         }
